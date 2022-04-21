@@ -2,21 +2,27 @@
 # Change as needed.
 override KERNEL := kernel.elf
 
+# Convenience macro to reliably declare overridable command variables.
+define DEFAULT_VAR =
+    ifeq ($(origin $1), default)
+        override $(1) := $(2)
+    endif
+    ifeq ($(origin $1), undefined)
+        override $(1) := $(2)
+    endif
+endef
+
 # It is highly recommended to use a custom built cross toolchain to build a kernel.
 # We are only using "cc" as a placeholder here. It may work by using
 # the host system's toolchain, but this is not guaranteed.
-ifeq ($(origin CC), default)
-CC := cc
-endif
+$(eval $(call DEFAULT_VAR,CC,cc))
 
 # Likewise, "ld" here is just a placeholder and your mileage may vary if using the
 # host's "ld".
-ifeq ($(origin LD), default)
-LD := ld
-endif
+$(eval $(call DEFAULT_VAR,LD,ld))
 
 # User controllable CFLAGS.
-CFLAGS ?= -O2 -g -Wall -Wextra -Wpedantic -pipe
+CFLAGS ?= -O2 -g -Wall -Wextra -pipe
 
 # User controllable linker flags. We set none by default.
 LDFLAGS ?=
@@ -29,6 +35,7 @@ override INTERNALCFLAGS :=   \
 	-fno-stack-protector \
 	-fno-stack-check     \
 	-fno-pic             \
+	-fno-pie             \
 	-mabi=sysv           \
 	-mno-80387           \
 	-mno-mmx             \
