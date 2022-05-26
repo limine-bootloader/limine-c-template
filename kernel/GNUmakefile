@@ -17,41 +17,37 @@ endef
 # the host system's toolchain, but this is not guaranteed.
 $(eval $(call DEFAULT_VAR,CC,cc))
 
-# Likewise, "ld" here is just a placeholder and your mileage may vary if using the
-# host's "ld".
-$(eval $(call DEFAULT_VAR,LD,ld))
-
 # User controllable CFLAGS.
-CFLAGS ?= -O2 -g -Wall -Wextra -pipe
+CFLAGS ?= -O2 -g -Wall -Wextra -Wpedantic -pipe
 
 # User controllable linker flags. We set none by default.
 LDFLAGS ?=
 
 # Internal C flags that should not be changed by the user.
-override INTERNALCFLAGS :=   \
-	-I.                  \
-	-std=c11             \
-	-ffreestanding       \
-	-fno-stack-protector \
-	-fno-stack-check     \
-	-fno-pic             \
-	-fno-pie             \
-	-mabi=sysv           \
-	-mno-80387           \
-	-mno-mmx             \
-	-mno-3dnow           \
-	-mno-sse             \
-	-mno-sse2            \
-	-mno-red-zone        \
-	-mcmodel=kernel      \
-	-MMD
+override INTERNALCFLAGS := \
+    -I.                    \
+    -std=c11               \
+    -ffreestanding         \
+    -fno-stack-protector   \
+    -fno-stack-check       \
+    -fno-pic               \
+    -fno-pie               \
+    -mabi=sysv             \
+    -mno-80387             \
+    -mno-mmx               \
+    -mno-3dnow             \
+    -mno-sse               \
+    -mno-sse2              \
+    -mno-red-zone          \
+    -mcmodel=kernel        \
+    -MMD
 
 # Internal linker flags that should not be changed by the user.
-override INTERNALLDFLAGS :=    \
-	-Tlinker.ld            \
-	-nostdlib              \
-	-zmax-page-size=0x1000 \
-	-static
+override INTERNALLDFLAGS :=     \
+    -nostdlib                   \
+    -static                     \
+    -Wl,-z,max-page-size=0x1000 \
+    -Wl,-T,linker.ld
 
 # Use find to glob all *.c files in the directory and extract the object names.
 override CFILES := $(shell find ./ -type f -name '*.c')
@@ -67,7 +63,7 @@ limine.h:
 
 # Link rules for the final kernel executable.
 $(KERNEL): $(OBJ)
-	$(LD) $(OBJ) $(LDFLAGS) $(INTERNALLDFLAGS) -o $@
+	$(CC) $(OBJ) $(LDFLAGS) $(INTERNALLDFLAGS) -o $@
 
 # Compilation rules for *.c files.
 -include $(HEADER_DEPS)
