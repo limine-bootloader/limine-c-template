@@ -1,8 +1,8 @@
 # Limine Bare Bones
 
-This repository will show you how to set up a simple 64-bit x86_64 Long Mode higher half kernel using Limine.
+This repository will show you how to set up a simple 64-bit higher half kernel using Limine.
 
-This project can be built using the host compiler on most Linux distros on x86_64, but it's recommended you set up an x86_64-elf [cross compiler](https://wiki.osdev.org/GCC_Cross-Compiler).
+This project can be built using the host compiler on most Linux distros, but it's recommended you set up a [cross compiler](https://wiki.osdev.org/GCC_Cross-Compiler) for your target architecture.
 
 It is also recommended to cross reference the contents of this repository with [the Limine Bare Bones](https://wiki.osdev.org/Limine_Bare_Bones) OSDev wiki page.
 

@@ -1,5 +1,5 @@
 limine
-ovmf-x64
+ovmf-X64
 kernel/limine.h
 *.elf
 *.iso

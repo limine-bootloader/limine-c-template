@@ -1,13 +1,16 @@
+# Target processor architecture.
+ARCH ?= x86_64
+
 # This is the name that our final kernel executable will have.
 # Change as needed.
 override KERNEL := kernel.elf
 
 # Convenience macro to reliably declare overridable command variables.
 define DEFAULT_VAR =
-    ifeq ($(origin $1), default)
+    ifeq ($(origin $1),default)
         override $(1) := $(2)
     endif
-    ifeq ($(origin $1), undefined)
+    ifeq ($(origin $1),undefined)
         override $(1) := $(2)
     endif
 endef
@@ -32,14 +35,6 @@ override INTERNALCFLAGS := \
     -fno-stack-check       \
     -fno-pie               \
     -fno-pic               \
-    -mabi=sysv             \
-    -mno-80387             \
-    -mno-mmx               \
-    -mno-3dnow             \
-    -mno-sse               \
-    -mno-sse2              \
-    -mno-red-zone          \
-    -mcmodel=kernel        \
     -MMD
 
 # Internal linker flags that should not be changed by the user.
@@ -48,6 +43,25 @@ override INTERNALLDFLAGS :=     \
     -static                     \
     -Wl,-z,max-page-size=0x1000 \
     -Wl,-T,linker.ld
+
+# Set archtecture specific variables (and check that the architecture is supported).
+ifeq ($(ARCH),x86_64)
+    override INTERNALCFLAGS += \
+        -m64                   \
+        -march=x86-64          \
+        -mabi=sysv             \
+        -mno-80387             \
+        -mno-mmx               \
+        -mno-sse               \
+        -mno-sse2              \
+        -mno-red-zone          \
+        -mcmodel=kernel
+    override INTERNALLDFLAGS +=    \
+        -Wl,-m,elf_x86_64          \
+        -Wl,--oformat=elf64-x86-64
+else
+    $(error Architecture $(ARCH) not supported)
+endif
 
 # Use find to glob all *.c files in the directory and extract the object names.
 override CFILES := $(shell find ./ -type f -name '*.c')

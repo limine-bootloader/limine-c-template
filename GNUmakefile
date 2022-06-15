@@ -1,3 +1,12 @@
+ARCH ?= x86_64
+
+# Check that the architecture is supported and set relevant variables.
+ifeq ($(ARCH),x86_64)
+    override EFI_ARCH := X64
+else
+    $(error Architecture $(ARCH) not supported)
+endif
+
 .PHONY: all
 all: barebones.iso
 
@@ -6,23 +15,23 @@ all-hdd: barebones.hdd
 
 .PHONY: run
 run: barebones.iso
-	qemu-system-x86_64 -M q35 -m 2G -cdrom barebones.iso -boot d
+	qemu-system-$(ARCH) -M q35 -m 2G -cdrom barebones.iso -boot d
 
 .PHONY: run-uefi
-run-uefi: ovmf-x64 barebones.iso
-	qemu-system-x86_64 -M q35 -m 2G -bios ovmf-x64/OVMF.fd -cdrom barebones.iso -boot d
+run-uefi: ovmf-$(EFI_ARCH) barebones.iso
+	qemu-system-$(ARCH) -M q35 -m 2G -bios ovmf-$(EFI_ARCH)/OVMF.fd -cdrom barebones.iso -boot d
 
 .PHONY: run-hdd
 run-hdd: barebones.hdd
-	qemu-system-x86_64 -M q35 -m 2G -hda barebones.hdd
+	qemu-system-$(ARCH) -M q35 -m 2G -hda barebones.hdd
 
 .PHONY: run-hdd-uefi
-run-hdd-uefi: ovmf-x64 barebones.hdd
-	qemu-system-x86_64 -M q35 -m 2G -bios ovmf-x64/OVMF.fd -hda barebones.hdd
+run-hdd-uefi: ovmf-$(EFI_ARCH) barebones.hdd
+	qemu-system-$(ARCH) -M q35 -m 2G -bios ovmf-$(EFI_ARCH)/OVMF.fd -hda barebones.hdd
 
-ovmf-x64:
-	mkdir -p ovmf-x64
-	cd ovmf-x64 && curl -o OVMF-X64.zip https://efi.akeo.ie/OVMF/OVMF-X64.zip && 7z x OVMF-X64.zip
+ovmf-$(EFI_ARCH):
+	mkdir -p ovmf-$(EFI_ARCH)
+	cd ovmf-$(EFI_ARCH) && curl -o OVMF-$(EFI_ARCH).zip https://efi.akeo.ie/OVMF/OVMF-$(EFI_ARCH).zip && 7z x OVMF-$(EFI_ARCH).zip
 
 limine:
 	git clone https://github.com/limine-bootloader/limine.git --branch=v3.0-branch-binary --depth=1
@@ -58,7 +67,7 @@ barebones.hdd: limine kernel
 	sudo mount `cat loopback_dev`p1 img_mount
 	sudo mkdir -p img_mount/EFI/BOOT
 	sudo cp -v kernel/kernel.elf limine.cfg limine/limine.sys img_mount/
-	sudo cp -v limine/BOOTX64.EFI img_mount/EFI/BOOT/
+	sudo cp -v limine/BOOT$(EFI_ARCH).EFI img_mount/EFI/BOOT/
 	sync
 	sudo umount img_mount
 	sudo losetup -d `cat loopback_dev`
@@ -71,5 +80,5 @@ clean:
 
 .PHONY: distclean
 distclean: clean
-	rm -rf limine ovmf-x64
+	rm -rf limine ovmf-$(EFI_ARCH)
 	$(MAKE) -C kernel distclean
