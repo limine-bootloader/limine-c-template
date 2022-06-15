@@ -30,8 +30,8 @@ override INTERNALCFLAGS := \
     -ffreestanding         \
     -fno-stack-protector   \
     -fno-stack-check       \
-    -fno-pic               \
     -fno-pie               \
+    -fno-pic               \
     -mabi=sysv             \
     -mno-80387             \
     -mno-mmx               \
