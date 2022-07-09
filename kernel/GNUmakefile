@@ -42,7 +42,7 @@ override INTERNALLDFLAGS :=     \
     -nostdlib                   \
     -static                     \
     -Wl,-z,max-page-size=0x1000 \
-    -Wl,-T,linker-$(ARCH).ld
+    -Wl,-T,linker.ld
 
 # Set archtecture specific variables (and check that the architecture is supported).
 ifeq ($(ARCH),x86_64)
@@ -56,8 +56,9 @@ ifeq ($(ARCH),x86_64)
         -mno-sse2              \
         -mno-red-zone          \
         -mcmodel=kernel
-    override INTERNALLDFLAGS += \
-        -Wl,-m,elf_x86_64
+    override INTERNALLDFLAGS +=    \
+        -Wl,-m,elf_x86_64          \
+        -Wl,--oformat=elf64-x86-64
 else
     $(error Architecture $(ARCH) not supported)
 endif
