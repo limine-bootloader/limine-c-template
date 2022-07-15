@@ -20,8 +20,8 @@ $(eval $(call DEFAULT_VAR,CC,cc))
 # User controllable CFLAGS.
 CFLAGS ?= -O2 -g -Wall -Wextra -Wpedantic -pipe
 
-# User controllable nasm flags. We set none by default.
-NASMFLAGS ?=
+# User controllable nasm flags.
+NASMFLAGS ?= -F dwarf -g
 
 # User controllable linker flags. We set none by default.
 LDFLAGS ?=
@@ -53,7 +53,7 @@ override INTERNALLDFLAGS :=     \
     -Wl,-T,linker.ld
 
 override INTERNALNASMFLAGS := \
-    -F dwarf -g -f elf64
+    -f elf64
 
 # Use find to glob all *.c, *.S, and *.asm files in the directory and extract the object names.
 override CFILES := $(shell find ./ -type f -name '*.c')
