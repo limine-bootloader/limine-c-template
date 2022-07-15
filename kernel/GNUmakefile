@@ -38,7 +38,6 @@ override INTERNALCFLAGS := \
     -mabi=sysv             \
     -mno-80387             \
     -mno-mmx               \
-    -mno-3dnow             \
     -mno-sse               \
     -mno-sse2              \
     -mno-red-zone          \
@@ -57,10 +56,10 @@ override INTERNALNASMFLAGS := \
 
 # Use find to glob all *.c, *.S, and *.asm files in the directory and extract the object names.
 override CFILES := $(shell find ./ -type f -name '*.c')
-override SFILES := $(shell find ./ -type f -name '*.S')
-override ASMFILES := $(shell find ./ -type f -name '*.asm')
-override OBJ := $(CFILES:.c=.o) $(SFILES:.S=.o) $(ASMFILES:.asm=.o)
-override HEADER_DEPS := $(CFILES:.c=.d) $(SFILES:.S=.d)
+override ASFILES := $(shell find ./ -type f -name '*.S')
+override NASMFILES := $(shell find ./ -type f -name '*.asm')
+override OBJ := $(CFILES:.c=.o) $(ASFILES:.S=.o) $(NASMFILES:.asm=.o)
+override HEADER_DEPS := $(CFILES:.c=.d) $(ASFILES:.S=.d)
 
 # Default target.
 .PHONY: all
@@ -73,7 +72,7 @@ limine.h:
 $(KERNEL): $(OBJ)
 	$(CC) $(OBJ) $(LDFLAGS) $(INTERNALLDFLAGS) -o $@
 
-# Include header dependencies
+# Include header dependencies.
 -include $(HEADER_DEPS)
 
 # Compilation rules for *.c files.
