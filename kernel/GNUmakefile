@@ -60,7 +60,7 @@ override CFILES := $(shell find ./ -type f -name '*.c')
 override SFILES := $(shell find ./ -type f -name '*.S')
 override ASMFILES := $(shell find ./ -type f -name '*.asm')
 override OBJ := $(CFILES:.c=.o) $(SFILES:.S=.o) $(ASMFILES:.asm=.o)
-override HEADER_DEPS := $(CFILES:.c=.d) $(SFILES:.S=.o)
+override HEADER_DEPS := $(CFILES:.c=.d) $(SFILES:.S=.d)
 
 # Default target.
 .PHONY: all
