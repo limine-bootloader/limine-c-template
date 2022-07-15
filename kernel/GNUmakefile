@@ -20,6 +20,9 @@ $(eval $(call DEFAULT_VAR,CC,cc))
 # User controllable CFLAGS.
 CFLAGS ?= -O2 -g -Wall -Wextra -Wpedantic -pipe
 
+# User controllable nasm flags. We set none by default.
+NASMFLAGS ?=
+
 # User controllable linker flags. We set none by default.
 LDFLAGS ?=
 
@@ -49,10 +52,15 @@ override INTERNALLDFLAGS :=     \
     -Wl,-z,max-page-size=0x1000 \
     -Wl,-T,linker.ld
 
-# Use find to glob all *.c files in the directory and extract the object names.
+override INTERNALNASMFLAGS := \
+    -F dwarf -g -f elf64
+
+# Use find to glob all *.c, *.S, and *.asm files in the directory and extract the object names.
 override CFILES := $(shell find ./ -type f -name '*.c')
-override OBJ := $(CFILES:.c=.o)
-override HEADER_DEPS := $(CFILES:.c=.d)
+override SFILES := $(shell find ./ -type f -name '*.S')
+override ASMFILES := $(shell find ./ -type f -name '*.asm')
+override OBJ := $(CFILES:.c=.o) $(SFILES:.S=.o) $(ASMFILES:.asm=.o)
+override HEADER_DEPS := $(CFILES:.c=.d) $(SFILES:.S=.o)
 
 # Default target.
 .PHONY: all
@@ -65,10 +73,20 @@ limine.h:
 $(KERNEL): $(OBJ)
 	$(CC) $(OBJ) $(LDFLAGS) $(INTERNALLDFLAGS) -o $@
 
-# Compilation rules for *.c files.
+# Include header dependencies
 -include $(HEADER_DEPS)
+
+# Compilation rules for *.c files.
 %.o: %.c limine.h
 	$(CC) $(CFLAGS) $(INTERNALCFLAGS) -c $< -o $@
+
+# Compilation rules for *.S files.
+%.o: %.S limine.h
+	$(CC) $(CFLAGS) $(INTERNALCFLAGS) -c $< -o $@
+
+# Compilation rules for *.asm (nasm) files.
+%.o: %.asm
+	nasm $(NASMFLAGS) $(INTERNALNASMFLAGS) $< -o $@
 
 # Remove object files and the final executable.
 .PHONY: clean
