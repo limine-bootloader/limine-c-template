@@ -36,6 +36,11 @@ SECTIONS
     /* Move to the next memory page for .data */
     . += CONSTANT(MAXPAGESIZE);
 
+    /* Not placing this here may cause trouble on some hosts */
+    .note.gnu.build-id : {
+        *(.note.gnu.build-id)
+    } :data
+
     .data : {
         *(.data .data.*)
     } :data
@@ -44,10 +49,4 @@ SECTIONS
         *(COMMON)
         *(.bss .bss.*)
     } :data
-
-    /* Discard unused sections from object files that may cause issues. */
-    /DISCARD/ : {
-        *.o(*)
-        *.a:*(*)
-    }
 }
