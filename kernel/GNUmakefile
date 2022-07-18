@@ -26,6 +26,9 @@ NASMFLAGS ?= -F dwarf -g
 # User controllable linker flags. We set none by default.
 LDFLAGS ?=
 
+# User controllable preprocessor flags. We set none by default.
+CPPFLAGS ?=
+
 # Internal C flags that should not be changed by the user.
 override INTERNALCFLAGS := \
     -I.                    \
@@ -70,18 +73,18 @@ limine.h:
 
 # Link rules for the final kernel executable.
 $(KERNEL): $(OBJ)
-	$(CC) $(OBJ) $(LDFLAGS) $(INTERNALLDFLAGS) -o $@
+	$(CC) $(CFLAGS) $(INTERNALCFLAGS) $(OBJ) $(LDFLAGS) $(INTERNALLDFLAGS) -o $@
 
 # Include header dependencies.
 -include $(HEADER_DEPS)
 
 # Compilation rules for *.c files.
 %.o: %.c limine.h
-	$(CC) $(CFLAGS) $(INTERNALCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INTERNALCFLAGS) -c $< -o $@
 
 # Compilation rules for *.S files.
 %.o: %.S limine.h
-	$(CC) $(CFLAGS) $(INTERNALCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) $(INTERNALCFLAGS) -c $< -o $@
 
 # Compilation rules for *.asm (nasm) files.
 %.o: %.asm
