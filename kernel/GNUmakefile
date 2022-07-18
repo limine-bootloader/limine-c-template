@@ -54,6 +54,7 @@ override INTERNALLDFLAGS :=     \
     -Wl,-z,max-page-size=0x1000 \
     -Wl,-T,linker.ld
 
+# Internal nasm flags that should not be changed by the user.
 override INTERNALNASMFLAGS := \
     -f elf64
 
