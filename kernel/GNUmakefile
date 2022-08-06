@@ -33,34 +33,34 @@ LDFLAGS ?=
 CPPFLAGS ?=
 
 # Internal C flags that should not be changed by the user.
-override INTERNALCFLAGS := \
-    -I.                    \
-    -std=c11               \
-    -ffreestanding         \
-    -fno-stack-protector   \
-    -fno-stack-check       \
-    -fno-pie               \
-    -fno-pic               \
-    -m64                   \
-    -march=x86-64          \
-    -mabi=sysv             \
-    -mno-80387             \
-    -mno-mmx               \
-    -mno-sse               \
-    -mno-sse2              \
-    -mno-red-zone          \
-    -mcmodel=kernel        \
+override CFLAGS +=       \
+    -I.                  \
+    -std=c11             \
+    -ffreestanding       \
+    -fno-stack-protector \
+    -fno-stack-check     \
+    -fno-pie             \
+    -fno-pic             \
+    -m64                 \
+    -march=x86-64        \
+    -mabi=sysv           \
+    -mno-80387           \
+    -mno-mmx             \
+    -mno-sse             \
+    -mno-sse2            \
+    -mno-red-zone        \
+    -mcmodel=kernel      \
     -MMD
 
 # Internal linker flags that should not be changed by the user.
-override INTERNALLDFLAGS := \
+override LDFLAGS +=         \
     -nostdlib               \
     -static                 \
     -z max-page-size=0x1000 \
     -T linker.ld
 
 # Internal nasm flags that should not be changed by the user.
-override INTERNALNASMFLAGS := \
+override NASMFLAGS += \
     -f elf64
 
 # Use find to glob all *.c, *.S, and *.asm files in the directory and extract the object names.
@@ -79,22 +79,22 @@ limine.h:
 
 # Link rules for the final kernel executable.
 $(KERNEL): $(OBJ)
-	$(LD) $(OBJ) $(LDFLAGS) $(INTERNALLDFLAGS) -o $@
+	$(LD) $(OBJ) $(LDFLAGS) -o $@
 
 # Include header dependencies.
 -include $(HEADER_DEPS)
 
 # Compilation rules for *.c files.
 %.o: %.c limine.h
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(INTERNALCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 # Compilation rules for *.S files.
 %.o: %.S limine.h
-	$(CC) $(CPPFLAGS) $(CFLAGS) $(INTERNALCFLAGS) -c $< -o $@
+	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
 
 # Compilation rules for *.asm (nasm) files.
 %.o: %.asm
-	nasm $(NASMFLAGS) $(INTERNALNASMFLAGS) $< -o $@
+	nasm $(NASMFLAGS) $< -o $@
 
 # Remove object files and the final executable.
 .PHONY: clean
