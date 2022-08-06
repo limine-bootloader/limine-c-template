@@ -17,6 +17,9 @@ endef
 # the host system's toolchain, but this is not guaranteed.
 $(eval $(call DEFAULT_VAR,CC,cc))
 
+# Same thing for "ld" (the linker).
+$(eval $(call DEFAULT_VAR,LD,ld))
+
 # User controllable CFLAGS.
 CFLAGS ?= -O2 -g -Wall -Wextra -Wpedantic -pipe
 
@@ -50,11 +53,11 @@ override INTERNALCFLAGS := \
     -MMD
 
 # Internal linker flags that should not be changed by the user.
-override INTERNALLDFLAGS :=     \
-    -nostdlib                   \
-    -static                     \
-    -Wl,-z,max-page-size=0x1000 \
-    -Wl,-T,linker.ld
+override INTERNALLDFLAGS := \
+    -nostdlib               \
+    -static                 \
+    -z max-page-size=0x1000 \
+    -T linker.ld
 
 # Internal nasm flags that should not be changed by the user.
 override INTERNALNASMFLAGS := \
@@ -76,7 +79,7 @@ limine.h:
 
 # Link rules for the final kernel executable.
 $(KERNEL): $(OBJ)
-	$(CC) $(CFLAGS) $(INTERNALCFLAGS) $(OBJ) $(LDFLAGS) $(INTERNALLDFLAGS) -o $@
+	$(LD) $(OBJ) $(LDFLAGS) $(INTERNALLDFLAGS) -o $@
 
 # Include header dependencies.
 -include $(HEADER_DEPS)
