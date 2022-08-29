@@ -61,6 +61,11 @@ override LDFLAGS +=         \
     -z max-page-size=0x1000 \
     -T linker.ld
 
+# Check if the linker supports -no-pie and enable it if it does
+ifeq ($(shell $(LD) --help 2>&1 | grep 'no-pie' >/dev/null 2>&1; echo $$?),0)
+    override LDFLAGS += -no-pie
+endif
+
 # Internal nasm flags that should not be changed by the user.
 override NASMFLAGS += \
     -f elf64
