@@ -21,7 +21,7 @@ $(eval $(call DEFAULT_VAR,CC,cc))
 $(eval $(call DEFAULT_VAR,LD,ld))
 
 # User controllable CFLAGS.
-CFLAGS ?= -O2 -g -Wall -Wextra -Wpedantic -pipe
+CFLAGS ?= -g -O2 -pipe -Wall -Wextra
 
 # User controllable preprocessor flags. We set none by default.
 CPPFLAGS ?=
@@ -34,11 +34,11 @@ LDFLAGS ?=
 
 # Internal C flags that should not be changed by the user.
 override CFLAGS +=       \
-    -I.                  \
     -std=c11             \
     -ffreestanding       \
     -fno-stack-protector \
     -fno-stack-check     \
+    -fno-lto             \
     -fno-pie             \
     -fno-pic             \
     -m64                 \
@@ -50,12 +50,14 @@ override CFLAGS +=       \
     -mno-sse2            \
     -mno-red-zone        \
     -mcmodel=kernel      \
-    -MMD
+    -MMD                 \
+    -I.
 
 # Internal linker flags that should not be changed by the user.
 override LDFLAGS +=         \
     -nostdlib               \
     -static                 \
+    -m elf_x86_64           \
     -z max-page-size=0x1000 \
     -T linker.ld
 
