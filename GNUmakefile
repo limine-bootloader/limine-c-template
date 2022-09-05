@@ -25,7 +25,7 @@ ovmf-x64:
 	cd ovmf-x64 && curl -o OVMF-X64.zip https://efi.akeo.ie/OVMF/OVMF-X64.zip && 7z x OVMF-X64.zip
 
 limine:
-	git clone https://github.com/limine-bootloader/limine.git --branch=v3.0-branch-binary --depth=1
+	git clone https://github.com/limine-bootloader/limine.git --branch=v4.x-branch-binary --depth=1
 	make -C limine
 
 .PHONY: kernel
