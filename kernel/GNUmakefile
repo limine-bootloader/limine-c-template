@@ -61,7 +61,7 @@ override LDFLAGS +=         \
     -z max-page-size=0x1000 \
     -T linker.ld
 
-# Check if the linker supports -no-pie and enable it if it does.
+# Check if the linker supports -no-pie and enable it if it does
 ifeq ($(shell $(LD) --help 2>&1 | grep 'no-pie' >/dev/null 2>&1; echo $$?),0)
     override LDFLAGS += -no-pie
 endif
@@ -71,9 +71,9 @@ override NASMFLAGS += \
     -f elf64
 
 # Use find to glob all *.c, *.S, and *.asm files in the directory and extract the object names.
-override CFILES := $(shell find src -type f -name '*.c')
-override ASFILES := $(shell find src -type f -name '*.S')
-override NASMFILES := $(shell find src -type f -name '*.asm')
+override CFILES := $(shell find . -type f -name '*.c')
+override ASFILES := $(shell find . -type f -name '*.S')
+override NASMFILES := $(shell find . -type f -name '*.asm')
 override OBJ := $(CFILES:.c=.o) $(ASFILES:.S=.o) $(NASMFILES:.asm=.o)
 override HEADER_DEPS := $(CFILES:.c=.d) $(ASFILES:.S=.d)
 
