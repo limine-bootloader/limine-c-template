@@ -3,25 +3,27 @@
 #include <limine.h>
 
 // The Limine requests can be placed anywhere, but it is important that
-// the compiler does not optimise them away, so, usually, they should
+// the compiler does not optimize them away, so, usually, they should
 // be made volatile or equivalent.
 
 static volatile struct limine_terminal_request terminal_request = {
     .id = LIMINE_TERMINAL_REQUEST,
-    .revision = 0
-};
+    .revision = 0};
 
-static void done(void) {
-    for (;;) {
+static void done(void)
+{
+    for (;;)
+    {
         __asm__("hlt");
     }
 }
 
 // The following will be our kernel's entry point.
-void _start(void) {
+void _start(void)
+{
     // Ensure we got a terminal
-    if (terminal_request.response == NULL
-     || terminal_request.response->terminal_count < 1) {
+    if (terminal_request.response == NULL || terminal_request.response->terminal_count < 1)
+    {
         done();
     }
 

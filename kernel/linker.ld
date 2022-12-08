@@ -16,7 +16,7 @@ PHDRS
 
 SECTIONS
 {
-    /* We wanna be placed in the topmost 2GiB of the address space, for optimisations */
+    /* We want us to be placed in the topmost 2GiB of the address space, for optimizations */
     /* and because that is what the Limine spec mandates. */
     /* Any address in this region will do, but often 0xffffffff80000000 is chosen as */
     /* that is the beginning of the region. */
