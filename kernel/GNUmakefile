@@ -49,9 +49,12 @@ override CFLAGS +=       \
     -mno-sse             \
     -mno-sse2            \
     -mno-red-zone        \
-    -mcmodel=kernel      \
-    -MMD                 \
-    -I.
+    -mcmodel=kernel
+
+override CPPFLAGS := \
+    -I.              \
+    $(CPPFLAGS)      \
+    -MMD
 
 # Internal linker flags that should not be changed by the user.
 override LDFLAGS +=         \
@@ -93,11 +96,11 @@ $(KERNEL): $(OBJ)
 
 # Compilation rules for *.c files.
 %.o: %.c limine.h
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 # Compilation rules for *.S files.
 %.o: %.S limine.h
-	$(CC) $(CPPFLAGS) $(CFLAGS) -c $< -o $@
+	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 # Compilation rules for *.asm (nasm) files.
 %.o: %.asm
