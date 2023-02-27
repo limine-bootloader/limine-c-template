@@ -1,3 +1,6 @@
+# Nuke built-in rules and variables.
+override MAKEFLAGS += -rR
+
 # This is the name that our final kernel executable will have.
 # Change as needed.
 override KERNEL := kernel.elf
@@ -64,7 +67,7 @@ override LDFLAGS +=         \
     -z max-page-size=0x1000 \
     -T linker.ld
 
-# Check if the linker supports -no-pie and enable it if it does
+# Check if the linker supports -no-pie and enable it if it does.
 ifeq ($(shell $(LD) --help 2>&1 | grep 'no-pie' >/dev/null 2>&1; echo $$?),0)
     override LDFLAGS += -no-pie
 endif
