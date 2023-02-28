@@ -13,7 +13,7 @@ static volatile struct limine_terminal_request terminal_request = {
 
 static void done(void) {
     for (;;) {
-        __asm__("hlt");
+        asm ("hlt");
     }
 }
 
