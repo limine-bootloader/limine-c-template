@@ -29,7 +29,7 @@ ovmf-x64:
 
 limine:
 	git clone https://github.com/limine-bootloader/limine.git --branch=v4.x-branch-binary --depth=1
-	make -C limine
+	$(MAKE) -C limine
 
 .PHONY: kernel
 kernel:
