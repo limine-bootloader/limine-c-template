@@ -5,7 +5,7 @@ override MAKEFLAGS += -rR
 # Change as needed.
 override KERNEL := kernel.elf
 
-# Convenience macro to reliably declare overridable command variables.
+# Convenience macro to reliably declare user overridable variables.
 define DEFAULT_VAR =
     ifeq ($(origin $1),default)
         override $(1) := $(2)
@@ -24,16 +24,16 @@ $(eval $(call DEFAULT_VAR,CC,cc))
 $(eval $(call DEFAULT_VAR,LD,ld))
 
 # User controllable CFLAGS.
-CFLAGS ?= -g -O2 -pipe -Wall -Wextra
+$(eval $(call DEFAULT_VAR,CFLAGS,-g -O2 -pipe -Wall -Wextra))
 
 # User controllable preprocessor flags. We set none by default.
-CPPFLAGS ?=
+$(eval $(call DEFAULT_VAR,CPPFLAGS,))
 
 # User controllable nasm flags.
-NASMFLAGS ?= -F dwarf -g
+$(eval $(call DEFAULT_VAR,NASMFLAGS,-F dwarf -g))
 
 # User controllable linker flags. We set none by default.
-LDFLAGS ?=
+$(eval $(call DEFAULT_VAR,LDFLAGS,))
 
 # Internal C flags that should not be changed by the user.
 override CFLAGS +=       \
