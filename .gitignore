@@ -1,8 +1,4 @@
-limine
-ovmf-x64
-kernel/limine.h
-*.elf
+/limine
+/ovmf-x64
 *.iso
 *.hdd
-*.o
-*.d

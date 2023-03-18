@@ -23,10 +23,10 @@ $(eval $(call DEFAULT_VAR,CC,cc))
 # Same thing for "ld" (the linker).
 $(eval $(call DEFAULT_VAR,LD,ld))
 
-# User controllable CFLAGS.
+# User controllable C flags.
 $(eval $(call DEFAULT_VAR,CFLAGS,-g -O2 -pipe -Wall -Wextra))
 
-# User controllable preprocessor flags. We set none by default.
+# User controllable C preprocessor flags. We set none by default.
 $(eval $(call DEFAULT_VAR,CPPFLAGS,))
 
 # User controllable nasm flags.
@@ -54,6 +54,7 @@ override CFLAGS +=       \
     -mno-red-zone        \
     -mcmodel=kernel
 
+# Internal C preprocessor flags that should not be changed by the user.
 override CPPFLAGS := \
     -I.              \
     $(CPPFLAGS)      \
@@ -76,10 +77,11 @@ endif
 override NASMFLAGS += \
     -f elf64
 
-# Use find to glob all *.c, *.S, and *.asm files in the directory and extract the object names.
-override CFILES := $(shell find . -type f -name '*.c')
-override ASFILES := $(shell find . -type f -name '*.S')
-override NASMFILES := $(shell find . -type f -name '*.asm')
+# Use "find" to glob all *.c, *.S, and *.asm files in the tree and obtain the
+# object and header dependency file names.
+override CFILES := $(shell find -L . -type f -name '*.c')
+override ASFILES := $(shell find -L . -type f -name '*.S')
+override NASMFILES := $(shell find -L . -type f -name '*.asm')
 override OBJ := $(CFILES:.c=.o) $(ASFILES:.S=.o) $(NASMFILES:.asm=.o)
 override HEADER_DEPS := $(CFILES:.c=.d) $(ASFILES:.S=.d)
 
