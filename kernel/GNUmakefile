@@ -58,7 +58,8 @@ override CFLAGS +=       \
 override CPPFLAGS := \
     -I.              \
     $(CPPFLAGS)      \
-    -MMD
+    -MMD             \
+    -MP
 
 # Internal linker flags that should not be changed by the user.
 override LDFLAGS +=         \
