@@ -6,8 +6,8 @@
 // the compiler does not optimise them away, so, usually, they should
 // be made volatile or equivalent.
 
-static volatile struct limine_terminal_request terminal_request = {
-    .id = LIMINE_TERMINAL_REQUEST,
+static volatile struct limine_framebuffer_request framebuffer_request = {
+    .id = LIMINE_FRAMEBUFFER_REQUEST,
     .revision = 0
 };
 
@@ -68,15 +68,6 @@ int memcmp(const void *s1, const void *s2, size_t n) {
     return 0;
 }
 
-// Our quick and dirty strlen() implementation.
-size_t strlen(const char *str) {
-    size_t ret = 0;
-    while (*str++) {
-        ret++;
-    }
-    return ret;
-}
-
 // Halt and catch fire function.
 static void hcf(void) {
     asm ("cli");
@@ -89,18 +80,20 @@ static void hcf(void) {
 // If renaming _start() to something else, make sure to change the
 // linker script accordingly.
 void _start(void) {
-    // Ensure we got a terminal
-    if (terminal_request.response == NULL
-     || terminal_request.response->terminal_count < 1) {
+    // Ensure we got a framebuffer.
+    if (framebuffer_request.response == NULL
+     || framebuffer_request.response->framebuffer_count < 1) {
         hcf();
     }
 
-    // We should now be able to call the Limine terminal to print out
-    // a simple "Hello World" to screen.
-    const char *hello_msg = "Hello World";
+    // Fetch the first framebuffer.
+    struct limine_framebuffer *framebuffer = framebuffer_request.response->framebuffers[0];
 
-    struct limine_terminal *terminal = terminal_request.response->terminals[0];
-    terminal_request.response->write(terminal, hello_msg, strlen(hello_msg));
+    // Note: we assume the framebuffer model is RGB with 32-bit pixels.
+    for (size_t i = 0; i < 100; i++) {
+        uint32_t *fb_ptr = framebuffer->address;
+        fb_ptr[i * (framebuffer->pitch / 4) + i] = 0xffffff;
+    }
 
     // We're done, just hang...
     hcf();
