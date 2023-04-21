@@ -24,16 +24,20 @@ $(eval $(call DEFAULT_VAR,CC,cc))
 $(eval $(call DEFAULT_VAR,LD,ld))
 
 # User controllable C flags.
-$(eval $(call DEFAULT_VAR,CFLAGS,-g -O2 -pipe))
+override DEFAULT_CFLAGS := -g -O2 -pipe
+$(eval $(call DEFAULT_VAR,CFLAGS,$(DEFAULT_CFLAGS)))
 
 # User controllable C preprocessor flags. We set none by default.
-$(eval $(call DEFAULT_VAR,CPPFLAGS,))
+override DEFAULT_CPPFLAGS :=
+$(eval $(call DEFAULT_VAR,CPPFLAGS,$(DEFAULT_CPPFLAGS)))
 
 # User controllable nasm flags.
-$(eval $(call DEFAULT_VAR,NASMFLAGS,-F dwarf -g))
+override DEFAULT_NASMFLAGS := -F dwarf -g
+$(eval $(call DEFAULT_VAR,NASMFLAGS,$(DEFAULT_NASMFLAGS)))
 
 # User controllable linker flags. We set none by default.
-$(eval $(call DEFAULT_VAR,LDFLAGS,))
+override DEFAULT_LDFLAGS :=
+$(eval $(call DEFAULT_VAR,LDFLAGS,$(DEFAULT_LDFLAGS)))
 
 # Internal C flags that should not be changed by the user.
 override CFLAGS += \
