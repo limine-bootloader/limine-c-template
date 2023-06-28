@@ -50,8 +50,7 @@ override CFLAGS += \
     -fno-stack-protector \
     -fno-stack-check \
     -fno-lto \
-    -fno-PIE \
-    -fno-PIC \
+    -fPIE \
     -m64 \
     -march=x86-64 \
     -mabi=sysv \
@@ -59,8 +58,7 @@ override CFLAGS += \
     -mno-mmx \
     -mno-sse \
     -mno-sse2 \
-    -mno-red-zone \
-    -mcmodel=kernel
+    -mno-red-zone
 
 # Internal C preprocessor flags that should not be changed by the user.
 override CPPFLAGS := \
@@ -71,16 +69,14 @@ override CPPFLAGS := \
 
 # Internal linker flags that should not be changed by the user.
 override LDFLAGS += \
+    -m elf_x86_64 \
     -nostdlib \
     -static \
-    -m elf_x86_64 \
+    -pie \
+    --no-dynamic-linker \
+    -z text \
     -z max-page-size=0x1000 \
     -T linker.ld
-
-# Check if the linker supports -no-pie and enable it if it does.
-ifeq ($(shell $(LD) --help 2>&1 | grep 'no-pie' >/dev/null 2>&1; echo $$?),0)
-    override LDFLAGS += -no-pie
-endif
 
 # Internal nasm flags that should not be changed by the user.
 override NASMFLAGS += \
