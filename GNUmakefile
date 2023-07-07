@@ -27,7 +27,7 @@ run-hdd-uefi: ovmf $(IMAGE_NAME).hdd
 
 ovmf:
 	mkdir -p ovmf
-	cd ovmf && curl -Lo OVMF-X64.zip https://efi.akeo.ie/OVMF/OVMF-X64.zip && unzip OVMF-X64.zip
+	cd ovmf && curl -Lo OVMF.fd https://retrage.github.io/edk2-nightly/bin/RELEASEX64_OVMF.fd
 
 limine:
 	git clone https://github.com/limine-bootloader/limine.git --branch=v5.x-branch-binary --depth=1
