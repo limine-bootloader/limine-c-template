@@ -11,6 +11,11 @@ static volatile struct limine_framebuffer_request framebuffer_request = {
     .revision = 0
 };
 
+// Macro that allows us to conjoin 3 8-bit numbers into a single number. This
+// allows us to easily generate colors more easily when writing to the
+// framebuffer.
+#define RGB(red, green, blue) ((uint32_t)((red << 16) | (green << 8) | (blue)))
+
 // GCC and Clang reserve the right to generate calls to the following
 // 4 functions even if they are not directly called.
 // Implement them as the C specification mandates.
@@ -94,7 +99,7 @@ void _start(void) {
     
     // Note: we assume the framebuffer model is RGB with 32-bit pixels.
     for (size_t i = 0; i < 100; i++) {
-        fb_ptr[i * (framebuffer->pitch / 4) + i] = 0xffffff;
+        fb_ptr[i * (framebuffer->pitch / 4) + i] = RGB(255, 255, 255);
     }
 
     // We're done, just hang...
