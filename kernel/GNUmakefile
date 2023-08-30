@@ -53,7 +53,6 @@ override CFLAGS += \
     -fPIE \
     -m64 \
     -march=x86-64 \
-    -mabi=sysv \
     -mno-80387 \
     -mno-mmx \
     -mno-sse \
