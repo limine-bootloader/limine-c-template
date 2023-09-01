@@ -98,22 +98,22 @@ limine.h:
 	curl -Lo $@ https://github.com/limine-bootloader/limine/raw/trunk/limine.h
 
 # Link rules for the final kernel executable.
-$(KERNEL): $(OBJ)
+$(KERNEL): $(OBJ) GNUmakefile linker.ld
 	$(LD) $(OBJ) $(LDFLAGS) -o $@
 
 # Include header dependencies.
 -include $(HEADER_DEPS)
 
 # Compilation rules for *.c files.
-%.c.o: %.c limine.h
+%.c.o: %.c limine.h GNUmakefile
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 # Compilation rules for *.S files.
-%.S.o: %.S limine.h
+%.S.o: %.S limine.h GNUmakefile
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 # Compilation rules for *.asm (nasm) files.
-%.asm.o: %.asm
+%.asm.o: %.asm GNUmakefile
 	nasm $(NASMFLAGS) $< -o $@
 
 # Remove object files and the final executable.
