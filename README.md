@@ -1,6 +1,6 @@
 # Limine Bare Bones
 
-This repository will demonstrate how to set up a basic higher half x86-64 kernel using Limine.
+This repository will demonstrate how to set up a basic x86-64 kernel using Limine.
 
 It is recommended to cross reference the contents of this repository with [the Limine Bare Bones](https://wiki.osdev.org/Limine_Bare_Bones) OSDev wiki page.
 
