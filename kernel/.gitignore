@@ -1,4 +1,4 @@
-/limine.h
+/src/limine.h
+/obj
 *.elf
 *.o
-*.d
