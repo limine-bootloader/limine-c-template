@@ -106,17 +106,17 @@ $(KERNEL): GNUmakefile linker.ld $(OBJ)
 
 # Compilation rules for *.c files.
 obj/%.c.o: src/%.c GNUmakefile src/limine.h
-	mkdir -p obj
+	mkdir -p "$$(dirname $@)"
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 # Compilation rules for *.S files.
 obj/%.S.o: src/%.S GNUmakefile src/limine.h
-	mkdir -p obj
+	mkdir -p "$$(dirname $@)"
 	$(CC) $(CFLAGS) $(CPPFLAGS) -c $< -o $@
 
 # Compilation rules for *.asm (nasm) files.
 obj/%.asm.o: src/%.asm GNUmakefile
-	mkdir -p obj
+	mkdir -p "$$(dirname $@)"
 	nasm $(NASMFLAGS) $< -o $@
 
 # Remove object files and the final executable.
