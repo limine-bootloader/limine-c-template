@@ -1,4 +1,4 @@
-# Limine Bare Bones
+# Limine C Template
 
 This repository will demonstrate how to set up a basic x86-64 kernel using Limine.
 
