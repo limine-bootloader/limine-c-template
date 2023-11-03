@@ -1,12 +1,19 @@
 #include <stdint.h>
 #include <stddef.h>
+#include <stdbool.h>
 #include <limine.h>
 
-// The Limine requests can be placed anywhere, but it is important that
-// the compiler does not optimise them away, so, usually, they should
-// be made volatile or equivalent.
+// Set the base revision to 1, this is recommended as this is the latest
+// base revision described by the Limine boot protocol specification.
+// See specification for further info.
 
-static volatile struct limine_framebuffer_request framebuffer_request = {
+LIMINE_BASE_REVISION(1)
+
+// The Limine requests can be placed anywhere, but it is important that
+// the compiler does not optimise them away, so, in C, they should
+// NOT be made "static".
+
+struct limine_framebuffer_request framebuffer_request = {
     .id = LIMINE_FRAMEBUFFER_REQUEST,
     .revision = 0
 };
@@ -80,6 +87,11 @@ static void hcf(void) {
 // If renaming _start() to something else, make sure to change the
 // linker script accordingly.
 void _start(void) {
+    // Ensure the bootloader actually understands our base revision (see spec).
+    if (LIMINE_BASE_REVISION_SUPPORTED == false) {
+        hcf();
+    }
+
     // Ensure we got a framebuffer.
     if (framebuffer_request.response == NULL
      || framebuffer_request.response->framebuffer_count < 1) {
