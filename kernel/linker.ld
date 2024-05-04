@@ -26,9 +26,9 @@ SECTIONS
 
     /* Define a section to contain the Limine requests and assign it to its own PHDR */
     .requests : {
-        *(.requests_start_marker)
-        *(.requests)
-        *(.requests_end_marker)
+        KEEP(*(.requests_start_marker))
+        KEEP(*(.requests))
+        KEEP(*(.requests_end_marker))
     } :requests
 
     /* Move to the next memory page for .text */
