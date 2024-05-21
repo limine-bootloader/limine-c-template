@@ -32,21 +32,21 @@ SECTIONS
     } :requests
 
     /* Move to the next memory page for .text */
-    . += CONSTANT(MAXPAGESIZE);
+    . = ALIGN(CONSTANT(MAXPAGESIZE));
 
     .text : {
         *(.text .text.*)
     } :text
 
     /* Move to the next memory page for .rodata */
-    . += CONSTANT(MAXPAGESIZE);
+    . = ALIGN(CONSTANT(MAXPAGESIZE));
 
     .rodata : {
         *(.rodata .rodata.*)
     } :rodata
 
     /* Move to the next memory page for .data */
-    . += CONSTANT(MAXPAGESIZE);
+    . = ALIGN(CONSTANT(MAXPAGESIZE));
 
     .data : {
         *(.data .data.*)
