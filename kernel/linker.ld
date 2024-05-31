@@ -73,6 +73,9 @@ SECTIONS
     } :data
 
     /* Discard .note.* and .eh_frame since they may cause issues on some hosts. */
+    /* Also discard the program interpreter section since we do not need one. This is */
+    /* more or less equivalent to the --no-dynamic-linker linker flag, except that it */
+    /* works with ld.gold. */
     /DISCARD/ : {
         *(.eh_frame)
         *(.note .note.*)
