@@ -2,7 +2,7 @@
 
 This repository will demonstrate how to set up a basic x86-64 kernel in C using Limine.
 
-It is recommended to cross reference the contents of this repository with [the Limine Bare Bones](https://wiki.osdev.org/Limine_Bare_Bones) OSDev wiki page.
+It is recommended to cross reference the contents of this repository with [the Limine Bare Bones](https://osdev.wiki/wiki/Limine_Bare_Bones) OSDev wiki page.
 
 ## How to use this?
 
