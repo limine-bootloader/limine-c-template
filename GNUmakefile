@@ -34,8 +34,12 @@ limine/limine:
 	git clone https://github.com/limine-bootloader/limine.git --branch=v8.x-binary --depth=1
 	$(MAKE) -C limine
 
+kernel-deps:
+	./kernel/get-deps
+	touch kernel-deps
+
 .PHONY: kernel
-kernel:
+kernel: kernel-deps
 	$(MAKE) -C kernel
 
 $(IMAGE_NAME).iso: limine/limine kernel
@@ -69,10 +73,10 @@ $(IMAGE_NAME).hdd: limine/limine kernel
 
 .PHONY: clean
 clean:
+	if test -f kernel-deps; then $(MAKE) -C kernel clean; fi
 	rm -rf iso_root $(IMAGE_NAME).iso $(IMAGE_NAME).hdd
-	$(MAKE) -C kernel clean
 
 .PHONY: distclean
 distclean: clean
-	rm -rf limine ovmf
-	$(MAKE) -C kernel distclean
+	if test -f kernel-deps; then $(MAKE) -C kernel distclean; fi
+	rm -rf kernel-deps limine ovmf
