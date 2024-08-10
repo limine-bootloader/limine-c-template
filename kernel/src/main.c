@@ -96,9 +96,9 @@ static void hcf(void) {
 }
 
 // The following will be our kernel's entry point.
-// If renaming _start() to something else, make sure to change the
+// If renaming kmain() to something else, make sure to change the
 // linker script accordingly.
-void _start(void) {
+void kmain(void) {
     // Ensure the bootloader actually understands our base revision (see spec).
     if (LIMINE_BASE_REVISION_SUPPORTED == false) {
         hcf();
