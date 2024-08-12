@@ -1,8 +1,6 @@
 # Limine C Template
 
-This repository will demonstrate how to set up a basic x86-64 kernel in C using Limine.
-
-It is recommended to cross reference the contents of this repository with [the Limine Bare Bones](https://osdev.wiki/wiki/Limine_Bare_Bones) OSDev wiki page.
+This repository will demonstrate how to set up a basic kernel in C using Limine.
 
 ## How to use this?
 
@@ -10,9 +8,15 @@ It is recommended to cross reference the contents of this repository with [the L
 
 Any `make` command depends on GNU make (`gmake`) and is expected to be run using it. This usually means using `make` on most GNU/Linux distros, or `gmake` on other non-GNU systems.
 
-All `make all*` targets depend on a GNU-compatible C toolchain capable of generating x86-64 ELF objects. Usually `gcc/binutils` or `clang/llvm/lld` provided by any x86-64 UNIX like (including Linux) distribution will suffice.
+It is recommended to build this project using a standard UNIX-like system, using a Clang/LLVM toolchain capable of cross compilation (the default, unless `KCC` and/or `KLD` are explicitly set).
 
 Additionally, building an ISO with `make all` requires `xorriso`, and building a HDD/USB image with `make all-hdd` requires `sgdisk` (usually from `gdisk` or `gptfdisk` packages) and `mtools`.
+
+### Architectural targets
+
+The `KARCH` make variable determines the target architecture to build the kernel and image for.
+
+The default `KARCH` is `x86_64`. Other options include: `aarch64`, `loongarch64`, and `riscv64`.
 
 ### Makefile targets
 
@@ -24,4 +28,4 @@ Running `make run` will build the kernel and a bootable ISO (equivalent to make 
 
 Running `make run-hdd` will build the kernel and a raw HDD image (equivalent to make all-hdd) and then run it using `qemu` (if installed).
 
-The `run-uefi` and `run-hdd-uefi` targets are equivalent to their non `-uefi` counterparts except that they boot `qemu` using a UEFI-compatible firmware.
+For x86_64, the `run-bios` and `run-hdd-bios` targets are equivalent to their non `-bios` counterparts except that they boot `qemu` using the default SeaBIOS firmware instead of OVMF.
