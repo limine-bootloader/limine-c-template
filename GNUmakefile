@@ -15,6 +15,7 @@ endef
 override DEFAULT_KARCH := x86_64
 $(eval $(call DEFAULT_VAR,KARCH,$(DEFAULT_KARCH)))
 
+# Default user QEMU flags. These are appended to the QEMU command calls.
 override DEFAULT_QEMUFLAGS := -m 2G
 $(eval $(call DEFAULT_VAR,QEMUFLAGS,$(DEFAULT_QEMUFLAGS)))
 
@@ -34,53 +35,52 @@ run-hdd: run-hdd-$(KARCH)
 
 .PHONY: run-x86_64
 run-x86_64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_NAME).iso
-	qemu-system-x86_64 \
+	qemu-system-$(KARCH) \
 		-M q35 \
-		$(QEMUFLAGS) \
 		-drive if=pflash,unit=0,format=raw,file=ovmf/ovmf-code-$(KARCH).fd,readonly=on \
 		-drive if=pflash,unit=1,format=raw,file=ovmf/ovmf-vars-$(KARCH).fd \
-		-cdrom $(IMAGE_NAME).iso
+		-cdrom $(IMAGE_NAME).iso \
+		$(QEMUFLAGS)
 
 .PHONY: run-hdd-x86_64
 run-hdd-x86_64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_NAME).hdd
-	qemu-system-x86_64 \
+	qemu-system-$(KARCH) \
 		-M q35 \
-		$(QEMUFLAGS) \
 		-drive if=pflash,unit=0,format=raw,file=ovmf/ovmf-code-$(KARCH).fd,readonly=on \
 		-drive if=pflash,unit=1,format=raw,file=ovmf/ovmf-vars-$(KARCH).fd \
-		-hda $(IMAGE_NAME).hdd
+		-hda $(IMAGE_NAME).hdd \
+		$(QEMUFLAGS)
 
 .PHONY: run-aarch64
 run-aarch64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_NAME).iso
-	qemu-system-aarch64 \
+	qemu-system-$(KARCH) \
 		-M virt \
-		$(QEMUFLAGS) \
 		-cpu cortex-a72 \
 		-device ramfb \
 		-device qemu-xhci \
 		-device usb-kbd \
 		-drive if=pflash,unit=0,format=raw,file=ovmf/ovmf-code-$(KARCH).fd,readonly=on \
 		-drive if=pflash,unit=1,format=raw,file=ovmf/ovmf-vars-$(KARCH).fd \
-		-cdrom $(IMAGE_NAME).iso
+		-cdrom $(IMAGE_NAME).iso \
+		$(QEMUFLAGS)
 
 .PHONY: run-hdd-aarch64
 run-hdd-aarch64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_NAME).hdd
-	qemu-system-aarch64 \
+	qemu-system-$(KARCH) \
 		-M virt \
-		$(QEMUFLAGS) \
 		-cpu cortex-a72 \
 		-device ramfb \
 		-device qemu-xhci \
 		-device usb-kbd \
 		-drive if=pflash,unit=0,format=raw,file=ovmf/ovmf-code-$(KARCH).fd,readonly=on \
 		-drive if=pflash,unit=1,format=raw,file=ovmf/ovmf-vars-$(KARCH).fd \
-		-hda $(IMAGE_NAME).hdd
+		-hda $(IMAGE_NAME).hdd \
+		$(QEMUFLAGS)
 
 .PHONY: run-riscv64
 run-riscv64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_NAME).iso
-	qemu-system-riscv64 \
+	qemu-system-$(KARCH) \
 		-M virt \
-		$(QEMUFLAGS) \
 		-cpu rv64 \
 		-device ramfb \
 		-device qemu-xhci \
@@ -89,13 +89,13 @@ run-riscv64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_NAME)
 		-drive if=pflash,unit=1,format=raw,file=ovmf/ovmf-vars-$(KARCH).fd \
 		-device virtio-scsi-pci,id=scsi \
 		-device scsi-cd,drive=cd0 \
-		-drive id=cd0,format=raw,file=$(IMAGE_NAME).iso
+		-drive id=cd0,format=raw,file=$(IMAGE_NAME).iso \
+		$(QEMUFLAGS)
 
 .PHONY: run-hdd-riscv64
 run-hdd-riscv64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_NAME).hdd
-	qemu-system-riscv64 \
+	qemu-system-$(KARCH) \
 		-M virt \
-		$(QEMUFLAGS) \
 		-cpu rv64 \
 		-device ramfb \
 		-device qemu-xhci \
@@ -104,48 +104,50 @@ run-hdd-riscv64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_N
 		-drive if=pflash,unit=1,format=raw,file=ovmf/ovmf-vars-$(KARCH).fd \
 		-device virtio-scsi-pci,id=scsi \
 		-device scsi-hd,drive=hd0 \
-		-drive id=hd0,format=raw,file=$(IMAGE_NAME).hdd
+		-drive id=hd0,format=raw,file=$(IMAGE_NAME).hdd \
+		$(QEMUFLAGS)
 
 .PHONY: run-loongarch64
 run-loongarch64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_NAME).iso
-	qemu-system-loongarch64 \
+	qemu-system-$(KARCH) \
 		-M virt \
-		$(QEMUFLAGS) \
 		-cpu la464 \
 		-device ramfb \
 		-device qemu-xhci \
 		-device usb-kbd \
 		-drive if=pflash,unit=0,format=raw,file=ovmf/ovmf-code-$(KARCH).fd,readonly=on \
 		-drive if=pflash,unit=1,format=raw,file=ovmf/ovmf-vars-$(KARCH).fd \
-		-cdrom $(IMAGE_NAME).iso
+		-cdrom $(IMAGE_NAME).iso \
+		$(QEMUFLAGS)
 
 .PHONY: run-hdd-loongarch64
 run-hdd-loongarch64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_NAME).hdd
-	qemu-system-loongarch64 \
+	qemu-system-$(KARCH) \
 		-M virt \
-		$(QEMUFLAGS) \
 		-cpu la464 \
 		-device ramfb \
 		-device qemu-xhci \
 		-device usb-kbd \
 		-drive if=pflash,unit=0,format=raw,file=ovmf/ovmf-code-$(KARCH).fd,readonly=on \
 		-drive if=pflash,unit=1,format=raw,file=ovmf/ovmf-vars-$(KARCH).fd \
-		-hda $(IMAGE_NAME).hdd
+		-hda $(IMAGE_NAME).hdd \
+		$(QEMUFLAGS)
+
 
 .PHONY: run-bios
 run-bios: $(IMAGE_NAME).iso
-	qemu-system-x86_64 \
+	qemu-system-$(KARCH) \
 		-M q35 \
-		$(QEMUFLAGS) \
 		-cdrom $(IMAGE_NAME).iso \
-		-boot d
+		-boot d \
+		$(QEMUFLAGS)
 
 .PHONY: run-hdd-bios
 run-hdd-bios: $(IMAGE_NAME).hdd
-	qemu-system-x86_64 \
+	qemu-system-$(KARCH) \
 		-M q35 \
-		$(QEMUFLAGS) \
-		-hda $(IMAGE_NAME).hdd
+		-hda $(IMAGE_NAME).hdd \
+		$(QEMUFLAGS)
 
 ovmf/ovmf-code-$(KARCH).fd:
 	mkdir -p ovmf
