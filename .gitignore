@@ -1,5 +1,5 @@
 /kernel-deps
 /limine
-/ovmf*
+/ovmf
 *.iso
 *.hdd

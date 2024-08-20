@@ -30,36 +30,36 @@ run: run-$(KARCH)
 run-hdd: run-hdd-$(KARCH)
 
 .PHONY: run-x86_64
-run-x86_64: ovmf-code-$(KARCH).fd $(IMAGE_NAME).iso
-	qemu-system-x86_64 -M q35 -m 2G -bios ovmf-code-$(KARCH).fd -cdrom $(IMAGE_NAME).iso -boot d
+run-x86_64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_NAME).iso
+	qemu-system-x86_64 -M q35 -m 2G -drive if=pflash,unit=0,format=raw,file=ovmf/ovmf-code-$(KARCH).fd,readonly=on -drive if=pflash,unit=1,format=raw,file=ovmf/ovmf-vars-$(KARCH).fd -cdrom $(IMAGE_NAME).iso
 
 .PHONY: run-hdd-x86_64
-run-hdd-x86_64: ovmf-code-$(KARCH).fd $(IMAGE_NAME).hdd
-	qemu-system-x86_64 -M q35 -m 2G -bios ovmf-code-$(KARCH).fd -hda $(IMAGE_NAME).hdd
+run-hdd-x86_64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_NAME).hdd
+	qemu-system-x86_64 -M q35 -m 2G -drive if=pflash,unit=0,format=raw,file=ovmf/ovmf-code-$(KARCH).fd,readonly=on -drive if=pflash,unit=1,format=raw,file=ovmf/ovmf-vars-$(KARCH).fd -hda $(IMAGE_NAME).hdd
 
 .PHONY: run-aarch64
-run-aarch64: ovmf-code-$(KARCH).fd $(IMAGE_NAME).iso
-	qemu-system-aarch64 -M virt -cpu cortex-a72 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -bios ovmf-code-$(KARCH).fd -cdrom $(IMAGE_NAME).iso -boot d
+run-aarch64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_NAME).iso
+	qemu-system-aarch64 -M virt -cpu cortex-a72 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -drive if=pflash,unit=0,format=raw,file=ovmf/ovmf-code-$(KARCH).fd,readonly=on -drive if=pflash,unit=1,format=raw,file=ovmf/ovmf-vars-$(KARCH).fd -cdrom $(IMAGE_NAME).iso
 
 .PHONY: run-hdd-aarch64
-run-hdd-aarch64: ovmf-code-$(KARCH).fd $(IMAGE_NAME).hdd
-	qemu-system-aarch64 -M virt -cpu cortex-a72 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -bios ovmf-code-$(KARCH).fd -hda $(IMAGE_NAME).hdd
+run-hdd-aarch64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_NAME).hdd
+	qemu-system-aarch64 -M virt -cpu cortex-a72 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -drive if=pflash,unit=0,format=raw,file=ovmf/ovmf-code-$(KARCH).fd,readonly=on -drive if=pflash,unit=1,format=raw,file=ovmf/ovmf-vars-$(KARCH).fd -hda $(IMAGE_NAME).hdd
 
 .PHONY: run-riscv64
-run-riscv64: ovmf-code-$(KARCH).fd $(IMAGE_NAME).iso
-	qemu-system-riscv64 -M virt -cpu rv64 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -drive if=pflash,unit=0,format=raw,file=ovmf-code-$(KARCH).fd -device virtio-scsi-pci,id=scsi -device scsi-cd,drive=cd0 -drive id=cd0,format=raw,file=$(IMAGE_NAME).iso
+run-riscv64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_NAME).iso
+	qemu-system-riscv64 -M virt -cpu rv64 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -drive if=pflash,unit=0,format=raw,file=ovmf/ovmf-code-$(KARCH).fd,readonly=on -drive if=pflash,unit=1,format=raw,file=ovmf/ovmf-vars-$(KARCH).fd -device virtio-scsi-pci,id=scsi -device scsi-cd,drive=cd0 -drive id=cd0,format=raw,file=$(IMAGE_NAME).iso
 
 .PHONY: run-hdd-riscv64
-run-hdd-riscv64: ovmf-code-$(KARCH).fd $(IMAGE_NAME).hdd
-	qemu-system-riscv64 -M virt -cpu rv64 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -drive if=pflash,unit=0,format=raw,file=ovmf-code-$(KARCH).fd -device virtio-scsi-pci,id=scsi -device scsi-hd,drive=hd0 -drive id=hd0,format=raw,file=$(IMAGE_NAME).hdd
+run-hdd-riscv64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_NAME).hdd
+	qemu-system-riscv64 -M virt -cpu rv64 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -drive if=pflash,unit=0,format=raw,file=ovmf/ovmf-code-$(KARCH).fd,readonly=on -drive if=pflash,unit=1,format=raw,file=ovmf/ovmf-vars-$(KARCH).fd -device virtio-scsi-pci,id=scsi -device scsi-hd,drive=hd0 -drive id=hd0,format=raw,file=$(IMAGE_NAME).hdd
 
 .PHONY: run-loongarch64
-run-loongarch64: ovmf-code-$(KARCH).fd $(IMAGE_NAME).iso
-	qemu-system-loongarch64 -M virt -cpu la464 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -bios ovmf-code-$(KARCH).fd -cdrom $(IMAGE_NAME).iso -boot d
+run-loongarch64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_NAME).iso
+	qemu-system-loongarch64 -M virt -cpu la464 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -drive if=pflash,unit=0,format=raw,file=ovmf/ovmf-code-$(KARCH).fd,readonly=on -drive if=pflash,unit=1,format=raw,file=ovmf/ovmf-vars-$(KARCH).fd -cdrom $(IMAGE_NAME).iso
 
 .PHONY: run-hdd-loongarch64
-run-hdd-loongarch64: ovmf-code-$(KARCH).fd $(IMAGE_NAME).hdd
-	qemu-system-loongarch64 -M virt -cpu la464 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -bios ovmf-code-$(KARCH).fd -hda $(IMAGE_NAME).hdd
+run-hdd-loongarch64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_NAME).hdd
+	qemu-system-loongarch64 -M virt -cpu la464 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -drive if=pflash,unit=0,format=raw,file=ovmf/ovmf-code-$(KARCH).fd,readonly=on -drive if=pflash,unit=1,format=raw,file=ovmf/ovmf-vars-$(KARCH).fd -hda $(IMAGE_NAME).hdd
 
 .PHONY: run-bios
 run-bios: $(IMAGE_NAME).iso
@@ -69,8 +69,17 @@ run-bios: $(IMAGE_NAME).iso
 run-hdd-bios: $(IMAGE_NAME).hdd
 	qemu-system-x86_64 -M q35 -m 2G -hda $(IMAGE_NAME).hdd
 
-ovmf-code-$(KARCH).fd:
+ovmf/ovmf-code-$(KARCH).fd:
+	mkdir -p ovmf
 	curl -Lo $@ https://github.com/limine-bootloader/edk2-ovmf-nightly/releases/latest/download/ovmf-code-$(KARCH).fd
+	if [ "$(KARCH)" = "aarch64" ]; then dd if=/dev/zero of=$@ bs=1 count=0 seek=67108864 2>/dev/null; fi
+	if [ "$(KARCH)" = "riscv64" ]; then dd if=/dev/zero of=$@ bs=1 count=0 seek=33554432 2>/dev/null; fi
+
+ovmf/ovmf-vars-$(KARCH).fd:
+	mkdir -p ovmf
+	curl -Lo $@ https://github.com/limine-bootloader/edk2-ovmf-nightly/releases/latest/download/ovmf-vars-$(KARCH).fd
+	if [ "$(KARCH)" = "aarch64" ]; then dd if=/dev/zero of=$@ bs=1 count=0 seek=67108864 2>/dev/null; fi
+	if [ "$(KARCH)" = "riscv64" ]; then dd if=/dev/zero of=$@ bs=1 count=0 seek=33554432 2>/dev/null; fi
 
 limine/limine:
 	rm -rf limine
@@ -157,4 +166,4 @@ clean:
 .PHONY: distclean
 distclean:
 	if test -f kernel-deps; then $(MAKE) -C kernel distclean; fi
-	rm -rf iso_root *.iso *.hdd kernel-deps limine ovmf*
+	rm -rf iso_root *.iso *.hdd kernel-deps limine ovmf
