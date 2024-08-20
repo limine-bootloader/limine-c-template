@@ -30,36 +30,36 @@ run: run-$(KARCH)
 run-hdd: run-hdd-$(KARCH)
 
 .PHONY: run-x86_64
-run-x86_64: ovmf $(IMAGE_NAME).iso
-	qemu-system-x86_64 -M q35 -m 2G -bios ovmf-x86_64/OVMF.fd -cdrom $(IMAGE_NAME).iso -boot d
+run-x86_64: ovmf-code-$(KARCH).fd $(IMAGE_NAME).iso
+	qemu-system-x86_64 -M q35 -m 2G -bios ovmf-code-$(KARCH).fd -cdrom $(IMAGE_NAME).iso -boot d
 
 .PHONY: run-hdd-x86_64
-run-hdd-x86_64: ovmf $(IMAGE_NAME).hdd
-	qemu-system-x86_64 -M q35 -m 2G -bios ovmf-x86_64/OVMF.fd -hda $(IMAGE_NAME).hdd
+run-hdd-x86_64: ovmf-code-$(KARCH).fd $(IMAGE_NAME).hdd
+	qemu-system-x86_64 -M q35 -m 2G -bios ovmf-code-$(KARCH).fd -hda $(IMAGE_NAME).hdd
 
 .PHONY: run-aarch64
-run-aarch64: ovmf $(IMAGE_NAME).iso
-	qemu-system-aarch64 -M virt -cpu cortex-a72 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -bios ovmf-aarch64/OVMF.fd -cdrom $(IMAGE_NAME).iso -boot d
+run-aarch64: ovmf-code-$(KARCH).fd $(IMAGE_NAME).iso
+	qemu-system-aarch64 -M virt -cpu cortex-a72 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -bios ovmf-code-$(KARCH).fd -cdrom $(IMAGE_NAME).iso -boot d
 
 .PHONY: run-hdd-aarch64
-run-hdd-aarch64: ovmf $(IMAGE_NAME).hdd
-	qemu-system-aarch64 -M virt -cpu cortex-a72 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -bios ovmf-aarch64/OVMF.fd -hda $(IMAGE_NAME).hdd
+run-hdd-aarch64: ovmf-code-$(KARCH).fd $(IMAGE_NAME).hdd
+	qemu-system-aarch64 -M virt -cpu cortex-a72 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -bios ovmf-code-$(KARCH).fd -hda $(IMAGE_NAME).hdd
 
 .PHONY: run-riscv64
-run-riscv64: ovmf $(IMAGE_NAME).iso
-	qemu-system-riscv64 -M virt -cpu rv64 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -drive if=pflash,unit=0,format=raw,file=ovmf-riscv64/OVMF.fd -device virtio-scsi-pci,id=scsi -device scsi-cd,drive=cd0 -drive id=cd0,format=raw,file=$(IMAGE_NAME).iso
+run-riscv64: ovmf-code-$(KARCH).fd $(IMAGE_NAME).iso
+	qemu-system-riscv64 -M virt -cpu rv64 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -drive if=pflash,unit=0,format=raw,file=ovmf-code-$(KARCH).fd -device virtio-scsi-pci,id=scsi -device scsi-cd,drive=cd0 -drive id=cd0,format=raw,file=$(IMAGE_NAME).iso
 
 .PHONY: run-hdd-riscv64
-run-hdd-riscv64: ovmf $(IMAGE_NAME).hdd
-	qemu-system-riscv64 -M virt -cpu rv64 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -drive if=pflash,unit=0,format=raw,file=ovmf-riscv64/OVMF.fd -device virtio-scsi-pci,id=scsi -device scsi-hd,drive=hd0 -drive id=hd0,format=raw,file=$(IMAGE_NAME).hdd
+run-hdd-riscv64: ovmf-code-$(KARCH).fd $(IMAGE_NAME).hdd
+	qemu-system-riscv64 -M virt -cpu rv64 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -drive if=pflash,unit=0,format=raw,file=ovmf-code-$(KARCH).fd -device virtio-scsi-pci,id=scsi -device scsi-hd,drive=hd0 -drive id=hd0,format=raw,file=$(IMAGE_NAME).hdd
 
 .PHONY: run-loongarch64
-run-loongarch64: ovmf $(IMAGE_NAME).iso
-	qemu-system-loongarch64 -M virt -cpu la464 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -bios ovmf-loongarch64/OVMF.fd -cdrom $(IMAGE_NAME).iso -boot d
+run-loongarch64: ovmf-code-$(KARCH).fd $(IMAGE_NAME).iso
+	qemu-system-loongarch64 -M virt -cpu la464 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -bios ovmf-code-$(KARCH).fd -cdrom $(IMAGE_NAME).iso -boot d
 
 .PHONY: run-hdd-loongarch64
-run-hdd-loongarch64: ovmf $(IMAGE_NAME).hdd
-	qemu-system-loongarch64 -M virt -cpu la464 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -bios ovmf-loongarch64/OVMF.fd -hda $(IMAGE_NAME).hdd
+run-hdd-loongarch64: ovmf-code-$(KARCH).fd $(IMAGE_NAME).hdd
+	qemu-system-loongarch64 -M virt -cpu la464 -device ramfb -device qemu-xhci -device usb-kbd -m 2G -bios ovmf-code-$(KARCH).fd -hda $(IMAGE_NAME).hdd
 
 .PHONY: run-bios
 run-bios: $(IMAGE_NAME).iso
@@ -69,24 +69,8 @@ run-bios: $(IMAGE_NAME).iso
 run-hdd-bios: $(IMAGE_NAME).hdd
 	qemu-system-x86_64 -M q35 -m 2G -hda $(IMAGE_NAME).hdd
 
-.PHONY: ovmf
-ovmf: ovmf-$(KARCH)
-
-ovmf-x86_64:
-	mkdir -p ovmf-x86_64
-	cd ovmf-x86_64 && curl -o OVMF.fd https://retrage.github.io/edk2-nightly/bin/RELEASEX64_OVMF.fd
-
-ovmf-aarch64:
-	mkdir -p ovmf-aarch64
-	cd ovmf-aarch64 && curl -o OVMF.fd https://retrage.github.io/edk2-nightly/bin/RELEASEAARCH64_QEMU_EFI.fd
-
-ovmf-riscv64:
-	mkdir -p ovmf-riscv64
-	cd ovmf-riscv64 && curl -o OVMF.fd https://retrage.github.io/edk2-nightly/bin/RELEASERISCV64_VIRT_CODE.fd && dd if=/dev/zero of=OVMF.fd bs=1 count=0 seek=33554432
-
-ovmf-loongarch64:
-	mkdir -p ovmf-loongarch64
-	cd ovmf-loongarch64 && curl -o OVMF.fd https://raw.githubusercontent.com/limine-bootloader/firmware/trunk/loongarch64/QEMU_EFI.fd
+ovmf-code-$(KARCH).fd:
+	curl -Lo $@ https://github.com/limine-bootloader/edk2-ovmf-nightly/releases/latest/download/ovmf-code-$(KARCH).fd
 
 limine/limine:
 	rm -rf limine
