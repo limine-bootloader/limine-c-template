@@ -24,12 +24,6 @@ $(eval $(call DEFAULT_VAR,KARCH,$(DEFAULT_KARCH)))
 override DEFAULT_KCC := clang
 $(eval $(call DEFAULT_VAR,KCC,$(DEFAULT_KCC)))
 
-# Check if KCC is Clang.
-override KCC_IS_CLANG := no
-ifeq ($(shell $(KCC) --version 2>&1 | grep -i 'clang' >/dev/null 2>&1 && echo 1),1)
-    override KCC_IS_CLANG := yes
-endif
-
 # User controllable linker command.
 override DEFAULT_KLD := ld.lld
 $(eval $(call DEFAULT_VAR,KLD,$(DEFAULT_KLD)))
@@ -82,9 +76,9 @@ endif
 
 # Architecture specific internal flags.
 ifeq ($(KARCH),x86_64)
-    ifeq ($(KCC_IS_CLANG),yes)
+    ifeq ($(KCC),clang)
         override KCC += \
-            -target x86_64-elf
+            -target x86_64-unknown-none
     endif
     override KCFLAGS += \
         -m64 \
@@ -100,18 +94,18 @@ ifeq ($(KARCH),x86_64)
     override KNASMFLAGS += \
         -f elf64
 else ifeq ($(KARCH),aarch64)
-    ifeq ($(KCC_IS_CLANG),yes)
+    ifeq ($(KCC),clang)
         override KCC += \
-            -target aarch64-elf
+            -target aarch64-unknown-none
     endif
     override KCFLAGS += \
         -mgeneral-regs-only
     override KLDFLAGS += \
         -m aarch64elf
 else ifeq ($(KARCH),riscv64)
-    ifeq ($(KCC_IS_CLANG),yes)
+    ifeq ($(KCC),clang)
         override KCC += \
-            -target riscv64-elf
+            -target riscv64-unknown-none
         override KCFLAGS += \
             -march=rv64imac
     else
@@ -125,9 +119,9 @@ else ifeq ($(KARCH),riscv64)
         -m elf64lriscv \
         --no-relax
 else ifeq ($(KARCH),loongarch64)
-    ifeq ($(KCC_IS_CLANG),yes)
+    ifeq ($(KCC),clang)
         override KCC += \
-            -target loongarch64-none
+            -target loongarch64-unknown-none
     endif
     override KCFLAGS += \
         -march=loongarch64 \
