@@ -92,11 +92,13 @@ else ifeq ($(KARCH),riscv64)
     ifeq ($(KCC),clang)
         override KCC += \
             -target riscv64-unknown-none
-        override KCFLAGS += \
-            -march=rv64imac
-    else
+    endif
+    ifeq ($(shell $(KCC) --version | grep -i 'clang'),)
         override KCFLAGS += \
             -march=rv64imac_zicsr_zifencei
+    else
+        override KCFLAGS += \
+            -march=rv64imac
     endif
     override KCFLAGS += \
         -mabi=lp64 \
