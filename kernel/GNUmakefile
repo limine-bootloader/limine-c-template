@@ -12,6 +12,12 @@ override USER_VARIABLE = $(if $(filter $(origin $(1)),default undefined),$(eval 
 # Target architecture to build for. Default to x86_64.
 $(call USER_VARIABLE,KARCH,x86_64)
 
+# Destination directory on install (should always be empty by default).
+$(call USER_VARIABLE,DESTDIR,)
+
+# Install prefix; /usr/local is a good, standard default pick.
+$(call USER_VARIABLE,PREFIX,/usr/local)
+
 # Check if the architecture is supported.
 ifeq ($(filter $(KARCH),aarch64 loongarch64 riscv64 x86_64),)
     $(error Architecture $(KARCH) not supported)
@@ -198,3 +204,9 @@ distclean:
 install: all
 	install -d "$(DESTDIR)$(PREFIX)/share/$(OUTPUT)"
 	install -m 644 bin-$(KARCH)/$(OUTPUT) "$(DESTDIR)$(PREFIX)/share/$(OUTPUT)/$(OUTPUT)-$(KARCH)"
+
+# Try to undo whatever the "install" target did.
+.PHONY: uninstall
+uninstall:
+	rm -f "$(DESTDIR)$(PREFIX)/share/$(OUTPUT)/$(OUTPUT)-$(KARCH)"
+	-rmdir "$(DESTDIR)$(PREFIX)/share/$(OUTPUT)"
