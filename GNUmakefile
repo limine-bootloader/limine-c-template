@@ -82,9 +82,7 @@ run-riscv64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_NAME)
 		-device usb-mouse \
 		-drive if=pflash,unit=0,format=raw,file=ovmf/ovmf-code-$(KARCH).fd,readonly=on \
 		-drive if=pflash,unit=1,format=raw,file=ovmf/ovmf-vars-$(KARCH).fd \
-		-device virtio-scsi-pci,id=scsi \
-		-device scsi-cd,drive=cd0 \
-		-drive id=cd0,format=raw,file=$(IMAGE_NAME).iso \
+		-cdrom $(IMAGE_NAME).iso \
 		$(QEMUFLAGS)
 
 .PHONY: run-hdd-riscv64
@@ -98,9 +96,7 @@ run-hdd-riscv64: ovmf/ovmf-code-$(KARCH).fd ovmf/ovmf-vars-$(KARCH).fd $(IMAGE_N
 		-device usb-mouse \
 		-drive if=pflash,unit=0,format=raw,file=ovmf/ovmf-code-$(KARCH).fd,readonly=on \
 		-drive if=pflash,unit=1,format=raw,file=ovmf/ovmf-vars-$(KARCH).fd \
-		-device virtio-scsi-pci,id=scsi \
-		-device scsi-hd,drive=hd0 \
-		-drive id=hd0,format=raw,file=$(IMAGE_NAME).hdd \
+		-hda $(IMAGE_NAME).hdd \
 		$(QEMUFLAGS)
 
 .PHONY: run-loongarch64
@@ -150,14 +146,20 @@ run-hdd-bios: $(IMAGE_NAME).hdd
 ovmf/ovmf-code-$(KARCH).fd:
 	mkdir -p ovmf
 	curl -Lo $@ https://github.com/osdev0/edk2-ovmf-nightly/releases/latest/download/ovmf-code-$(KARCH).fd
-	if [ "$(KARCH)" = "aarch64" ]; then dd if=/dev/zero of=$@ bs=1 count=0 seek=67108864 2>/dev/null; fi
-	if [ "$(KARCH)" = "riscv64" ]; then dd if=/dev/zero of=$@ bs=1 count=0 seek=33554432 2>/dev/null; fi
+	case "$(KARCH)" in \
+		aarch64) dd if=/dev/zero of=$@ bs=1 count=0 seek=67108864 2>/dev/null;; \
+		loongarch64) dd if=/dev/zero of=$@ bs=1 count=0 seek=5242880 2>/dev/null;; \
+		riscv64) dd if=/dev/zero of=$@ bs=1 count=0 seek=33554432 2>/dev/null;; \
+	esac
 
 ovmf/ovmf-vars-$(KARCH).fd:
 	mkdir -p ovmf
 	curl -Lo $@ https://github.com/osdev0/edk2-ovmf-nightly/releases/latest/download/ovmf-vars-$(KARCH).fd
-	if [ "$(KARCH)" = "aarch64" ]; then dd if=/dev/zero of=$@ bs=1 count=0 seek=67108864 2>/dev/null; fi
-	if [ "$(KARCH)" = "riscv64" ]; then dd if=/dev/zero of=$@ bs=1 count=0 seek=33554432 2>/dev/null; fi
+	case "$(KARCH)" in \
+		aarch64) dd if=/dev/zero of=$@ bs=1 count=0 seek=67108864 2>/dev/null;; \
+		loongarch64) dd if=/dev/zero of=$@ bs=1 count=0 seek=5242880 2>/dev/null;; \
+		riscv64) dd if=/dev/zero of=$@ bs=1 count=0 seek=33554432 2>/dev/null;; \
+	esac
 
 limine/limine:
 	rm -rf limine
