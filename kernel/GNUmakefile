@@ -61,7 +61,7 @@ override KCFLAGS += \
 override KCPPFLAGS := \
     -I src \
     $(KCPPFLAGS) \
-    -isystem freestnd-c-hdrs/$(KARCH)/include \
+    -isystem freestanding-headers \
     -MMD \
     -MP
 
@@ -155,7 +155,7 @@ endif
 override HEADER_DEPS := $(addprefix obj-$(KARCH)/,$(CFILES:.c=.c.d) $(ASFILES:.S=.S.d))
 
 # Ensure the dependencies have been obtained.
-override MISSING_DEPS := $(shell if ! test -d freestnd-c-hdrs || ! test -f src/cc-runtime.c || ! test -f src/limine.h; then echo 1; fi)
+override MISSING_DEPS := $(shell if ! test -d freestanding-headers || ! test -f src/cc-runtime.c || ! test -f src/limine.h; then echo 1; fi)
 ifeq ($(MISSING_DEPS),1)
     $(error Please run the ./get-deps script first)
 endif
@@ -197,7 +197,7 @@ clean:
 # Remove everything built and generated including downloaded dependencies.
 .PHONY: distclean
 distclean:
-	rm -rf bin-* obj-* freestnd-c-hdrs src/cc-runtime.c src/limine.h
+	rm -rf bin-* obj-* freestanding-headers src/cc-runtime.c src/limine.h
 
 # Install the final built executable to its final on-root location.
 .PHONY: install
