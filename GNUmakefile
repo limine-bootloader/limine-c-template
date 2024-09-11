@@ -246,10 +246,10 @@ endif
 
 .PHONY: clean
 clean:
-	if test -f kernel-deps; then $(MAKE) -C kernel clean; fi
+	$(MAKE) -C kernel clean
 	rm -rf iso_root $(IMAGE_NAME).iso $(IMAGE_NAME).hdd
 
 .PHONY: distclean
 distclean:
-	if test -f kernel-deps; then $(MAKE) -C kernel distclean; fi
+	$(MAKE) -C kernel distclean
 	rm -rf iso_root *.iso *.hdd kernel-deps limine ovmf
