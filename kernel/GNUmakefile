@@ -67,8 +67,8 @@ override KCFLAGS += \
 # Internal C preprocessor flags that should not be changed by the user.
 override KCPPFLAGS := \
     -I src \
-    $(KCPPFLAGS) \
     -isystem freestnd-c-hdrs-0bsd \
+    $(KCPPFLAGS) \
     -MMD \
     -MP
 
