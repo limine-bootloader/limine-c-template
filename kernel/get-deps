@@ -76,7 +76,7 @@ if ! test -f version; then
         199907f5303ab15a963377fabcc1f2ee736e4ed18d54c59aab08345aa5485e8a
 
     download_by_hash \
-        https://github.com/limine-bootloader/limine/raw/cf501adb63e2d5d7a68911887df6651bde4348aa/limine.h \
+        https://github.com/limine-bootloader/limine/raw/97c31196a9aec28b36ed9ff64d6df77a061c3d9b/limine.h \
         src/limine.h \
-        de2789b4dfceda28a11e98603a302d8d7ebbc2c1f87fa90ea475e37a991b4209
+        3a018a8326adb5e6cff14a8595c775fd88235eb3e5fde4a135132b6398d165d5
 fi
