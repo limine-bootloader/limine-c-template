@@ -44,7 +44,7 @@ clone_repo_commit \
 clone_repo_commit \
     https://codeberg.org/Limine/limine-protocol.git \
     limine-protocol \
-    42e836e30242c2c14f889fd76c6f9a57b0c18ec2
+    068b6481557db836e41bf644382367f8dee76d21
 
 touch .deps-obtained
 
