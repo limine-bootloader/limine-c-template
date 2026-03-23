@@ -3,12 +3,12 @@
 #include <stdbool.h>
 #include <limine.h>
 
-// Set the base revision to 5, this is recommended as this is the latest
+// Set the base revision to 6, this is recommended as this is the latest
 // base revision described by the Limine boot protocol specification.
 // See specification for further info.
 
 __attribute__((used, section(".limine_requests")))
-static volatile uint64_t limine_base_revision[] = LIMINE_BASE_REVISION(5);
+static volatile uint64_t limine_base_revision[] = LIMINE_BASE_REVISION(6);
 
 // The Limine requests can be placed anywhere, but it is important that
 // the compiler does not optimise them away, so, usually, they should
