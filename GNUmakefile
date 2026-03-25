@@ -52,7 +52,7 @@ run-aarch64: edk2-ovmf $(IMAGE_NAME).iso
 		-device ramfb \
 		-device qemu-xhci \
 		-device usb-kbd \
-		-device usb-mouse \
+		-device usb-tablet \
 		-drive if=pflash,unit=0,format=raw,file=edk2-ovmf/ovmf-code-$(ARCH).fd,readonly=on \
 		-cdrom $(IMAGE_NAME).iso \
 		$(QEMUFLAGS)
@@ -65,7 +65,7 @@ run-hdd-aarch64: edk2-ovmf $(IMAGE_NAME).hdd
 		-device ramfb \
 		-device qemu-xhci \
 		-device usb-kbd \
-		-device usb-mouse \
+		-device usb-tablet \
 		-drive if=pflash,unit=0,format=raw,file=edk2-ovmf/ovmf-code-$(ARCH).fd,readonly=on \
 		-hda $(IMAGE_NAME).hdd \
 		$(QEMUFLAGS)
@@ -78,7 +78,7 @@ run-riscv64: edk2-ovmf $(IMAGE_NAME).iso
 		-device ramfb \
 		-device qemu-xhci \
 		-device usb-kbd \
-		-device usb-mouse \
+		-device usb-tablet \
 		-drive if=pflash,unit=0,format=raw,file=edk2-ovmf/ovmf-code-$(ARCH).fd,readonly=on \
 		-cdrom $(IMAGE_NAME).iso \
 		$(QEMUFLAGS)
@@ -91,7 +91,7 @@ run-hdd-riscv64: edk2-ovmf $(IMAGE_NAME).hdd
 		-device ramfb \
 		-device qemu-xhci \
 		-device usb-kbd \
-		-device usb-mouse \
+		-device usb-tablet \
 		-drive if=pflash,unit=0,format=raw,file=edk2-ovmf/ovmf-code-$(ARCH).fd,readonly=on \
 		-hda $(IMAGE_NAME).hdd \
 		$(QEMUFLAGS)
@@ -104,7 +104,7 @@ run-loongarch64: edk2-ovmf $(IMAGE_NAME).iso
 		-device ramfb \
 		-device qemu-xhci \
 		-device usb-kbd \
-		-device usb-mouse \
+		-device usb-tablet \
 		-drive if=pflash,unit=0,format=raw,file=edk2-ovmf/ovmf-code-$(ARCH).fd,readonly=on \
 		-cdrom $(IMAGE_NAME).iso \
 		$(QEMUFLAGS)
@@ -117,7 +117,7 @@ run-hdd-loongarch64: edk2-ovmf $(IMAGE_NAME).hdd
 		-device ramfb \
 		-device qemu-xhci \
 		-device usb-kbd \
-		-device usb-mouse \
+		-device usb-tablet \
 		-drive if=pflash,unit=0,format=raw,file=edk2-ovmf/ovmf-code-$(ARCH).fd,readonly=on \
 		-hda $(IMAGE_NAME).hdd \
 		$(QEMUFLAGS)
