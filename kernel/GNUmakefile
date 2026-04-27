@@ -56,7 +56,7 @@ endif
 LDFLAGS :=
 
 # Ensure the dependencies have been obtained.
-ifneq ($(filter-out clean distclean,$(MAKECMDGOALS)),)
+ifneq ($(filter-out clean distclean,$(or $(MAKECMDGOALS),default)),)
     ifeq ($(wildcard .deps-obtained),)
         $(error Please run the ./get-deps script first)
     endif
