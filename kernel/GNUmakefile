@@ -164,6 +164,7 @@ override LDFLAGS += \
     -nostdlib \
     -static \
     -z max-page-size=0x1000 \
+    -z noexecstack \
     --gc-sections \
     -T linker-scripts/$(ARCH).lds
 
