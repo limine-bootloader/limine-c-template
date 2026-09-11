@@ -139,6 +139,7 @@ run-hdd-loongarch64: edk2-ovmf-bins $(IMAGE_NAME).hdd
 		$(QEMUFLAGS)
 
 
+ifeq ($(ARCH),x86_64)
 .PHONY: run-bios
 run-bios: $(IMAGE_NAME).iso
 	qemu-system-$(ARCH) \
@@ -153,6 +154,7 @@ run-hdd-bios: $(IMAGE_NAME).hdd
 		-M q35 \
 		-hda $(IMAGE_NAME).hdd \
 		$(QEMUFLAGS)
+endif
 
 edk2-ovmf-bins:
 	curl -L https://github.com/osdev0/edk2-ovmf-stable-bins/releases/latest/download/edk2-ovmf-bins.tar.gz | gunzip | tar -xf -
