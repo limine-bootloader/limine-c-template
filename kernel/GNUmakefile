@@ -92,6 +92,7 @@ ifeq ($(ARCH),x86_64)
     # Internal nasm flags that should not be changed by the user.
     override NASMFLAGS := \
         $(patsubst -g,-g -F dwarf,$(NASMFLAGS)) \
+        -i src/ \
         -Wall
 endif
 
