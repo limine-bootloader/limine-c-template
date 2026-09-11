@@ -10,7 +10,11 @@ Any `make` command depends on GNU make (`gmake`) and is expected to be run using
 
 It is recommended to build this project using a standard UNIX-like system, using a Clang/LLVM toolchain capable of cross compilation.
 
+Building also requires `git`, used to fetch the kernel's dependencies (see `kernel/get-deps`), `curl`, used to download the Limine release and the EDK2 OVMF firmware images, and a C compiler for the host (`cc` by default, see the `HOST_CC` `make` variable), used to build the `limine` host utility.
+
 Additionally, building an ISO with `make all` requires `xorriso`, and building a HDD/USB image with `make all-hdd` requires `sgdisk` (usually from `gdisk` or `gptfdisk` packages) and `mtools`.
+
+Assembly files with the `*.S` extension are built using the same toolchain as the C sources. Only `*.asm` files, which are built for `x86_64` alone and of which the template ships none, require `nasm`. The `run` targets require `qemu`.
 
 ### Toolchain selection
 
