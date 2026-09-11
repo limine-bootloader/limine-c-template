@@ -10,6 +10,31 @@ ARCH := x86_64
 # Default user QEMU flags. These are appended to the QEMU command calls.
 QEMUFLAGS := -m 2G
 
+# Internal QEMU flags that should not be changed by the user.
+ifeq ($(ARCH),x86_64)
+    override QEMU_MACHINE_FLAGS := \
+        -M q35
+else
+    ifeq ($(ARCH),aarch64)
+        override QEMU_CPU := cortex-a72
+    endif
+    ifeq ($(ARCH),riscv64)
+        override QEMU_CPU := rv64
+    endif
+    ifeq ($(ARCH),loongarch64)
+        override QEMU_CPU := la464
+    endif
+    override QEMU_MACHINE_FLAGS := \
+        -M virt \
+        -cpu $(QEMU_CPU) \
+        -device ramfb \
+        -device qemu-xhci \
+        -device usb-kbd \
+        -device usb-tablet
+endif
+override QEMU_UEFI_FLAGS := \
+    -drive if=pflash,unit=0,format=raw,file=edk2-ovmf-bins/ovmf-code-$(ARCH).fd,readonly=on
+
 override IMAGE_NAME := template-$(ARCH)
 
 # User controllable size of the HDD image, in MiB.
@@ -42,111 +67,26 @@ all: $(IMAGE_NAME).iso
 all-hdd: $(IMAGE_NAME).hdd
 
 .PHONY: run
-run: run-$(ARCH)
+run: edk2-ovmf-bins $(IMAGE_NAME).iso
+	qemu-system-$(ARCH) \
+		$(QEMU_MACHINE_FLAGS) \
+		$(QEMU_UEFI_FLAGS) \
+		-cdrom $(IMAGE_NAME).iso \
+		$(QEMUFLAGS)
 
 .PHONY: run-hdd
-run-hdd: run-hdd-$(ARCH)
-
-.PHONY: run-x86_64
-run-x86_64: edk2-ovmf-bins $(IMAGE_NAME).iso
+run-hdd: edk2-ovmf-bins $(IMAGE_NAME).hdd
 	qemu-system-$(ARCH) \
-		-M q35 \
-		-drive if=pflash,unit=0,format=raw,file=edk2-ovmf-bins/ovmf-code-$(ARCH).fd,readonly=on \
-		-cdrom $(IMAGE_NAME).iso \
-		$(QEMUFLAGS)
-
-.PHONY: run-hdd-x86_64
-run-hdd-x86_64: edk2-ovmf-bins $(IMAGE_NAME).hdd
-	qemu-system-$(ARCH) \
-		-M q35 \
-		-drive if=pflash,unit=0,format=raw,file=edk2-ovmf-bins/ovmf-code-$(ARCH).fd,readonly=on \
+		$(QEMU_MACHINE_FLAGS) \
+		$(QEMU_UEFI_FLAGS) \
 		-hda $(IMAGE_NAME).hdd \
 		$(QEMUFLAGS)
-
-.PHONY: run-aarch64
-run-aarch64: edk2-ovmf-bins $(IMAGE_NAME).iso
-	qemu-system-$(ARCH) \
-		-M virt \
-		-cpu cortex-a72 \
-		-device ramfb \
-		-device qemu-xhci \
-		-device usb-kbd \
-		-device usb-tablet \
-		-drive if=pflash,unit=0,format=raw,file=edk2-ovmf-bins/ovmf-code-$(ARCH).fd,readonly=on \
-		-cdrom $(IMAGE_NAME).iso \
-		$(QEMUFLAGS)
-
-.PHONY: run-hdd-aarch64
-run-hdd-aarch64: edk2-ovmf-bins $(IMAGE_NAME).hdd
-	qemu-system-$(ARCH) \
-		-M virt \
-		-cpu cortex-a72 \
-		-device ramfb \
-		-device qemu-xhci \
-		-device usb-kbd \
-		-device usb-tablet \
-		-drive if=pflash,unit=0,format=raw,file=edk2-ovmf-bins/ovmf-code-$(ARCH).fd,readonly=on \
-		-hda $(IMAGE_NAME).hdd \
-		$(QEMUFLAGS)
-
-.PHONY: run-riscv64
-run-riscv64: edk2-ovmf-bins $(IMAGE_NAME).iso
-	qemu-system-$(ARCH) \
-		-M virt \
-		-cpu rv64 \
-		-device ramfb \
-		-device qemu-xhci \
-		-device usb-kbd \
-		-device usb-tablet \
-		-drive if=pflash,unit=0,format=raw,file=edk2-ovmf-bins/ovmf-code-$(ARCH).fd,readonly=on \
-		-cdrom $(IMAGE_NAME).iso \
-		$(QEMUFLAGS)
-
-.PHONY: run-hdd-riscv64
-run-hdd-riscv64: edk2-ovmf-bins $(IMAGE_NAME).hdd
-	qemu-system-$(ARCH) \
-		-M virt \
-		-cpu rv64 \
-		-device ramfb \
-		-device qemu-xhci \
-		-device usb-kbd \
-		-device usb-tablet \
-		-drive if=pflash,unit=0,format=raw,file=edk2-ovmf-bins/ovmf-code-$(ARCH).fd,readonly=on \
-		-hda $(IMAGE_NAME).hdd \
-		$(QEMUFLAGS)
-
-.PHONY: run-loongarch64
-run-loongarch64: edk2-ovmf-bins $(IMAGE_NAME).iso
-	qemu-system-$(ARCH) \
-		-M virt \
-		-cpu la464 \
-		-device ramfb \
-		-device qemu-xhci \
-		-device usb-kbd \
-		-device usb-tablet \
-		-drive if=pflash,unit=0,format=raw,file=edk2-ovmf-bins/ovmf-code-$(ARCH).fd,readonly=on \
-		-cdrom $(IMAGE_NAME).iso \
-		$(QEMUFLAGS)
-
-.PHONY: run-hdd-loongarch64
-run-hdd-loongarch64: edk2-ovmf-bins $(IMAGE_NAME).hdd
-	qemu-system-$(ARCH) \
-		-M virt \
-		-cpu la464 \
-		-device ramfb \
-		-device qemu-xhci \
-		-device usb-kbd \
-		-device usb-tablet \
-		-drive if=pflash,unit=0,format=raw,file=edk2-ovmf-bins/ovmf-code-$(ARCH).fd,readonly=on \
-		-hda $(IMAGE_NAME).hdd \
-		$(QEMUFLAGS)
-
 
 ifeq ($(ARCH),x86_64)
 .PHONY: run-bios
 run-bios: $(IMAGE_NAME).iso
 	qemu-system-$(ARCH) \
-		-M q35 \
+		$(QEMU_MACHINE_FLAGS) \
 		-cdrom $(IMAGE_NAME).iso \
 		-boot d \
 		$(QEMUFLAGS)
@@ -154,7 +94,7 @@ run-bios: $(IMAGE_NAME).iso
 .PHONY: run-hdd-bios
 run-hdd-bios: $(IMAGE_NAME).hdd
 	qemu-system-$(ARCH) \
-		-M q35 \
+		$(QEMU_MACHINE_FLAGS) \
 		-hda $(IMAGE_NAME).hdd \
 		$(QEMUFLAGS)
 endif
