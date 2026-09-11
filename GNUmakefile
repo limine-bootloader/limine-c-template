@@ -12,8 +12,8 @@ override IMAGE_NAME := template-$(ARCH)
 # User controllable size of the HDD image, in MiB.
 HDD_SIZE := 64
 
-# Internal HDD geometry that should not be changed by the user. 64 heads of
-# 32 sectors make a cylinder exactly 1 MiB in size.
+# Internal HDD geometry that should not be changed by the user. Older mtools
+# require one; 64 heads of 32 sectors make a cylinder exactly 1 MiB in size.
 override HDD_HEADS := 64
 override HDD_SECTORS_PER_TRACK := 32
 override HDD_CYLINDER_SECTORS := $(shell echo $$(( $(HDD_HEADS) * $(HDD_SECTORS_PER_TRACK) )))
@@ -229,7 +229,7 @@ ifeq ($(ARCH),x86_64)
 else
 	PATH=$$PATH:/usr/sbin:/sbin sgdisk $(IMAGE_NAME).hdd -n 1:$(HDD_PART_START):$(HDD_PART_END) -t 1:ef00
 endif
-	mformat -i $(IMAGE_NAME).hdd@@1M
+	mformat -i $(IMAGE_NAME).hdd@@1M -T $(HDD_PART_SECTORS) -h $(HDD_HEADS) -s $(HDD_SECTORS_PER_TRACK) ::
 	mmd -i $(IMAGE_NAME).hdd@@1M ::/EFI ::/EFI/BOOT ::/boot ::/boot/limine
 	mcopy -i $(IMAGE_NAME).hdd@@1M kernel/bin-$(ARCH)/kernel ::/boot
 	mcopy -i $(IMAGE_NAME).hdd@@1M limine.conf ::/boot/limine
