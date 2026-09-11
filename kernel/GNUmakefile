@@ -168,6 +168,14 @@ override LDFLAGS += \
     --gc-sections \
     -T linker-scripts/$(ARCH).lds
 
+# Check if the linker supports -no-pie and enable it if it does.
+override LD_HAS_NO_PIE := $(shell ! $(LD) --help 2>/dev/null | grep -qE '(^|[[:space:]])--?no-pie([[:space:]]|$$)'; echo $$?)
+
+ifeq ($(LD_HAS_NO_PIE),1)
+    override LDFLAGS += \
+        -no-pie
+endif
+
 # Use "find" to glob all *.c, *.S, and *.asm files in the tree
 # (except the src/arch/* directories, as those are gonna be added
 # in the next step).
