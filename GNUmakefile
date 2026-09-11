@@ -9,6 +9,9 @@ QEMUFLAGS := -m 2G
 
 override IMAGE_NAME := template-$(ARCH)
 
+# User controllable size of the HDD image, in MiB.
+HDD_SIZE := 64
+
 # Toolchain for building the 'limine' executable for the host.
 HOST_CC := cc
 HOST_CFLAGS := -g -O2 -pipe
@@ -207,7 +210,7 @@ endif
 
 $(IMAGE_NAME).hdd: limine-binary/limine kernel
 	rm -f $(IMAGE_NAME).hdd
-	dd if=/dev/zero bs=1M count=0 seek=64 of=$(IMAGE_NAME).hdd
+	dd if=/dev/zero bs=1M count=0 seek=$(HDD_SIZE) of=$(IMAGE_NAME).hdd
 ifeq ($(ARCH),x86_64)
 	PATH=$$PATH:/usr/sbin:/sbin sgdisk $(IMAGE_NAME).hdd -n 1:2048 -t 1:ef00 -m 1
 	./limine-binary/limine bios-install $(IMAGE_NAME).hdd
