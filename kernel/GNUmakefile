@@ -1,6 +1,9 @@
 # Nuke built-in rules.
 .SUFFIXES:
 
+# Delete the target of a failed recipe.
+.DELETE_ON_ERROR:
+
 # This is the name that our final executable will have.
 # Change as needed.
 override OUTPUT := kernel

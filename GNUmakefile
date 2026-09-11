@@ -1,6 +1,9 @@
 # Nuke built-in rules.
 .SUFFIXES:
 
+# Delete the target of a failed recipe.
+.DELETE_ON_ERROR:
+
 # Target architecture to build for. Default to x86_64.
 ARCH := x86_64
 
