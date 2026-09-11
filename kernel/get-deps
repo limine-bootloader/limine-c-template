@@ -44,7 +44,7 @@ clone_repo_commit \
 clone_repo_commit \
     https://github.com/Limine-Bootloader/limine-protocol.git \
     limine-protocol \
-    93b5284ee279c817f3ad7a640472a38485c113c3
+    da65184e91f80fcb397270121b1e2515a11e01ee
 
 touch .deps-obtained
 
