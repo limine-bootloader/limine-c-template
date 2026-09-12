@@ -148,6 +148,14 @@ ifeq ($(ARCH),loongarch64)
         -mfpu=none \
         -msimd=none \
         -mno-relax
+    # Do not go through the GOT for external symbols.
+    ifeq ($(CC_IS_CLANG),1)
+        override CFLAGS += \
+            -fdirect-access-external-data
+    else
+        override CFLAGS += \
+            -mdirect-extern-access
+    endif
     override LDFLAGS += \
         -m elf64loongarch \
         --no-relax
